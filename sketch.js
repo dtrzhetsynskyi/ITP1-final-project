@@ -204,124 +204,252 @@ function checkFalling() {
 function drawCharacter() {
 	if (isLeft && isFalling) {
 		// jumping-left code
-		strokeWeight(3);
-		stroke(0);
-		fill(246, 244, 88);
-		rect(gameChar_x + 3, gameChar_y - 27 + 7 - 10, 10, 20, 3);
-		push()
-		translate(gameChar_x - 13, gameChar_y - 35)
-		rotate(1);
-		rect(0, 0, 10, 20, 3);
-		pop()
-		rect(gameChar_x + 12, gameChar_y - 50 + 7 - 10, 10, 25, 2);
-		ellipse(gameChar_x - 2, gameChar_y - 40 + 7 - 10, 33, 45);
-
-		fill(149, 202, 218)
-		ellipse(gameChar_x - 10 - 2, gameChar_y - 45 + 5 - 10, 20, 15);
-
+		// Left arm
 		noStroke()
-		fill(255)
-		ellipse(gameChar_x - 14, gameChar_y - 41 - 10, 10, 5);
+		fill(244, 60, 31)
+		push()
+		translate(gameChar_x - 8, gameChar_y - 58)
+		rotate(40)
+		ellipse(0, 0, 7, 30)
+		pop()
 
-		strokeWeight(1);
+		// Body and legs
+		push()
+		translate(gameChar_x - 1, gameChar_y - 49)
+		rotate(-30)
+		rect(0, 0, 8, 33, 5)
+		pop()
+
+		rect(gameChar_x - 5, gameChar_y - 69, 15, 30, 5)
+
+		push()
+		translate(gameChar_x - 2, gameChar_y - 51)
+		rotate(30)
+		rect(0, 0, 8, 33, 5)
+		pop()
+
+		// Backpack
+		fill(255)
+		stroke(0)
+		rect(gameChar_x + 17, gameChar_y - 107, 0.1, 50)
+		rect(gameChar_x + 10, gameChar_y - 70, 10, 30, 5);
+
+		// Helmet
+		fill(255)
+		stroke(0)
+		ellipse(gameChar_x + 2, gameChar_y - 80, 25, 25);
+		fill(0)
+		ellipse(gameChar_x - 3, gameChar_y - 80, 15, 15);
+
+		// Sun reflection on helmet
+		fill(255)
+		noStroke()
+		push()
+		translate(gameChar_x, gameChar_y - 82)
+		rotate(150)
+		ellipse(0, 0, 3, 5)
+		pop()
 	}
 	else if (isRight && isFalling) {
 		// jumping-right code
-		strokeWeight(3);
-		stroke(0);
-		fill(246, 244, 88);
-		rect(gameChar_x - 13 + 2, gameChar_y - 27 + 7 - 10, 10, 20, 3);
-		push()
-		translate(gameChar_x + 7, gameChar_y - 24)
-		rotate(-1);
-		rect(0, 0, 10, 20, 3);
-		pop()
-		rect(gameChar_x - 23 + 2, gameChar_y - 50 + 7 - 10, 10, 25, 2);
-		ellipse(gameChar_x + 2, gameChar_y - 40 + 7 - 10, 33, 45);
-
-		fill(149, 202, 218)
-		ellipse(gameChar_x + 10 + 2, gameChar_y - 45 + 5 - 10, 20, 15);
-
 		noStroke()
-		fill(255)
-		ellipse(gameChar_x + 14, gameChar_y - 41 - 10, 10, 5);
+		fill(244, 60, 31)
+		// Right arm
+		push()
+		translate(gameChar_x + 13, gameChar_y - 60)
+		rotate(-40)
+		ellipse(0, 0, 7, 30)
+		pop()
 
-		strokeWeight(1);
+		// Body and legs
+		push()
+		translate(gameChar_x - 1, gameChar_y - 49)
+		rotate(-30)
+		rect(0, 0, 8, 33, 5)
+		pop()
+
+		rect(gameChar_x - 5, gameChar_y - 69, 15, 30, 5)
+
+		push()
+		translate(gameChar_x - 2, gameChar_y - 51)
+		rotate(30)
+		rect(0, 0, 8, 33, 5)
+		pop()
+
+		// Backpack
+		fill(255)
+		stroke(0)
+		rect(gameChar_x - 12, gameChar_y - 107, 0.1, 50)
+		rect(gameChar_x - 15, gameChar_y - 70, 10, 30, 5);
+
+		// Helmet
+		fill(255)
+		stroke(0)
+		ellipse(gameChar_x + 2, gameChar_y - 80, 25, 25);
+		fill(0)
+		ellipse(gameChar_x + 7, gameChar_y - 80, 15, 15);
+
+		// Sun reflection on helmet
+		fill(255)
+		noStroke()
+		push()
+		translate(gameChar_x + 5, gameChar_y - 82)
+		rotate(30)
+		ellipse(0, 0, 3, 5)
+		pop()
 	}
 	else if (isLeft) {
 		// walking left code
-		strokeWeight(3);
-		stroke(0);
-		fill(246, 244, 88);
-		rect(gameChar_x + 3, gameChar_y - 27 + 7, 10, 20, 3);
-		push()
-		translate(gameChar_x - 13, gameChar_y - 27 + 7 - 3)
-		rotate(1);
-		rect(0, 0, 10, 20, 3);
-		pop()
-		rect(gameChar_x + 12, gameChar_y - 50 + 7, 10, 25, 2);
-		ellipse(gameChar_x - 2, gameChar_y - 40 + 7, 33, 45);
-
-		fill(149, 202, 218)
-		ellipse(gameChar_x - 10 - 2, gameChar_y - 45 + 5, 20, 15);
-
+		// Left arm
 		noStroke()
-		fill(255)
-		ellipse(gameChar_x - 14, gameChar_y - 41, 10, 5);
+		fill(244, 60, 31)
+		push()
+		translate(gameChar_x - 8, gameChar_y - 35)
+		rotate(30)
+		ellipse(0, 0, 7, 30)
+		pop()
 
-		strokeWeight(1);
+		// Body and legs
+		push()
+		translate(gameChar_x - 1, gameChar_y - 29)
+		rotate(-20)
+		rect(0, 0, 8, 33, 5)
+		pop()
+
+		rect(gameChar_x - 5, gameChar_y - 49, 15, 30, 5)
+
+		push()
+		translate(gameChar_x - 2, gameChar_y - 31)
+		rotate(20)
+		rect(0, 0, 8, 33, 5)
+		pop()
+
+		// Backpack
+		fill(255)
+		stroke(0)
+		rect(gameChar_x + 17, gameChar_y - 87, 0.1, 50)
+		rect(gameChar_x + 10, gameChar_y - 50, 10, 30, 5);
+
+		// Helmet
+		fill(255)
+		stroke(0)
+		ellipse(gameChar_x + 2, gameChar_y - 60, 25, 25);
+		fill(0)
+		ellipse(gameChar_x - 3, gameChar_y - 60, 15, 15);
+
+		// Sun reflection on helmet
+		fill(255)
+		noStroke()
+		push()
+		translate(gameChar_x, gameChar_y - 62)
+		rotate(150)
+		ellipse(0, 0, 3, 5)
+		pop()
 	}
 	else if (isRight) {
 		// walking right code
-		strokeWeight(3);
-		stroke(0);
-		fill(246, 244, 88);
-		rect(gameChar_x - 13 + 2, gameChar_y - 27 + 7, 10, 20, 3);
-		push()
-		translate(gameChar_x + 10, gameChar_y - 27 + 10)
-		rotate(-1);
-		rect(0, 0, 10, 20, 3);
-		pop()
-		rect(gameChar_x - 23 + 2, gameChar_y - 50 + 7, 10, 25, 2);
-		ellipse(gameChar_x + 2, gameChar_y - 40 + 7, 33, 45);
-
-		fill(149, 202, 218)
-		ellipse(gameChar_x + 10 + 2, gameChar_y - 45 + 5, 20, 15);
-
 		noStroke()
-		fill(255)
-		ellipse(gameChar_x + 14, gameChar_y - 41, 10, 5);
+		fill(244, 60, 31)
+		// Right arm
+		push()
+		translate(gameChar_x + 13, gameChar_y - 37)
+		rotate(-30)
+		ellipse(0, 0, 7, 30)
+		pop()
 
-		strokeWeight(1);
+		// Body and legs
+		push()
+		translate(gameChar_x - 1, gameChar_y - 29)
+		rotate(-20)
+		rect(0, 0, 8, 33, 5)
+		pop()
+
+		rect(gameChar_x - 5, gameChar_y - 49, 15, 30, 5)
+
+		push()
+		translate(gameChar_x - 2, gameChar_y - 31)
+		rotate(20)
+		rect(0, 0, 8, 33, 5)
+		pop()
+
+		// Backpack
+		fill(255)
+		stroke(0)
+		rect(gameChar_x - 12, gameChar_y - 87, 0.1, 50)
+		rect(gameChar_x - 15, gameChar_y - 50, 10, 30, 5);
+
+		// Helmet
+		fill(255)
+		stroke(0)
+		ellipse(gameChar_x + 2, gameChar_y - 60, 25, 25);
+		fill(0)
+		ellipse(gameChar_x + 7, gameChar_y - 60, 15, 15);
+
+		// Sun reflection on helmet
+		fill(255)
+		noStroke()
+		push()
+		translate(gameChar_x + 5, gameChar_y - 62)
+		rotate(30)
+		ellipse(0, 0, 3, 5)
+		pop()
 	}
 	else if (isFalling || isPlummeting) {
 		// jumping facing forwards code
-		strokeWeight(3);
-		stroke(0);
-		fill(246, 244, 88);
-		push()
-		translate(gameChar_x - 7, gameChar_y - 27 + 7 - 3)
-		rotate(1);
-		rect(0, 0, 10, 20, 3);
-		pop()
-		push()
-		translate(gameChar_x + 7, gameChar_y - 27 + 10)
-		rotate(-1);
-		rect(0, 0, 10, 20, 3);
-		pop()
-		ellipse(gameChar_x + 2, gameChar_y - 40 + 7, 33, 45);
-
-		fill(149, 202, 218)
-		ellipse(gameChar_x + 3, gameChar_y - 45 + 5, 20, 15);
-
-		noStroke()
 		fill(255)
-		ellipse(gameChar_x + 4, gameChar_y - 41, 10, 5);
+		stroke(0)
+		rect(gameChar_x - 11, gameChar_y - 107, 0.1, 50)
+		rect(gameChar_x - 17.5, gameChar_y - 72, 35, 30, 5);
 
-		strokeWeight(1);
+		// Left arm
+		noStroke()
+		fill(244, 60, 31)
+		push()
+		translate(gameChar_x - 16, gameChar_y - 60)
+		rotate(40)
+		ellipse(0, 0, 7, 30)
+		pop()
+
+		// Right arm
+		push()
+		translate(gameChar_x + 17, gameChar_y - 60)
+		rotate(-40)
+		ellipse(0, 0, 7, 30)
+		pop()
+
+		// Body and legs
+		push()
+		translate(gameChar_x - 10, gameChar_y - 51)
+		rotate(10)
+		rect(0, 0, 8, 33, 5)
+		pop()
+
+		push()
+		translate(gameChar_x + 3, gameChar_y - 50)
+		rotate(-10)
+		rect(0, 0, 8, 33, 5)
+		pop()
+		rect(gameChar_x - 11, gameChar_y - 69, 23, 30, 5)
+
+		// Helmet
+		fill(255)
+		stroke(0)
+		ellipse(gameChar_x, gameChar_y - 80, 25, 25);
+		fill(0)
+		ellipse(gameChar_x, gameChar_y - 80, 15, 15);
+
+		// Sun reflection on helmet
+		fill(255)
+		noStroke()
+		push()
+		translate(gameChar_x + 3, gameChar_y - 83)
+		rotate(150)
+		ellipse(0, 0, 3, 5)
+		pop()
 	}
 	else {
 		// standing front facing code
+		// Backpack
 		fill(255)
 		stroke(0)
 		rect(gameChar_x - 11, gameChar_y - 87, 0.1, 50)
@@ -351,24 +479,18 @@ function drawCharacter() {
 		// Helmet
 		fill(255)
 		stroke(0)
-		ellipse(gameChar_x, gameChar_y - 60, 30, 30);
+		ellipse(gameChar_x, gameChar_y - 60, 25, 25);
 		fill(0)
-		ellipse(gameChar_x, gameChar_y - 59, 20, 20);
+		ellipse(gameChar_x, gameChar_y - 59, 15, 15);
 
 		// Sun reflection on helmet
 		fill(255)
 		noStroke()
 		push()
-		translate(gameChar_x + 5, gameChar_y - 63)
+		translate(gameChar_x + 3, gameChar_y - 62)
 		rotate(150)
 		ellipse(0, 0, 3, 5)
 		pop()
-
-		// Ukrainian flag
-		fill(1, 87, 183)
-		rect(gameChar_x + 1, gameChar_y - 42, 8, 3)
-		fill(255, 215, 1)
-		rect(gameChar_x + 1, gameChar_y - 39, 8, 3)
 	}
 }
 
