@@ -459,14 +459,14 @@ function drawCharacter() {
 		noStroke()
 		fill(244, 60, 31)
 		push()
-		translate(gameChar_x - 15, gameChar_y - 35)
+		translate(gameChar_x - 12, gameChar_y - 35)
 		rotate(20)
 		ellipse(0, 0, 7, 30)
 		pop()
 
 		// Right arm
 		push()
-		translate(gameChar_x + 15, gameChar_y - 35)
+		translate(gameChar_x + 12.7, gameChar_y - 35)
 		rotate(-20)
 		ellipse(0, 0, 7, 30)
 		pop()
