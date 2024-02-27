@@ -27,6 +27,8 @@ var flagpole;
 var game_score;
 var lives;
 
+let character;
+
 // function to initialize variables and environment
 function setup() {
 	createCanvas(1024, 576);
@@ -204,293 +206,27 @@ function checkFalling() {
 function drawCharacter() {
 	if (isLeft && isFalling) {
 		// jumping-left code
-		// Left arm
-		noStroke()
-		fill(244, 60, 31)
-		push()
-		translate(gameChar_x - 8, gameChar_y - 58)
-		rotate(40)
-		ellipse(0, 0, 7, 30)
-		pop()
-
-		// Body and legs
-		push()
-		translate(gameChar_x - 1, gameChar_y - 49)
-		rotate(-30)
-		rect(0, 0, 8, 33, 5)
-		pop()
-
-		rect(gameChar_x - 5, gameChar_y - 69, 15, 30, 5)
-
-		push()
-		translate(gameChar_x - 2, gameChar_y - 51)
-		rotate(30)
-		rect(0, 0, 8, 33, 5)
-		pop()
-
-		// Backpack
-		fill(255)
-		stroke(0)
-		rect(gameChar_x + 17, gameChar_y - 107, 0.1, 50)
-		rect(gameChar_x + 10, gameChar_y - 70, 10, 30, 5);
-
-		// Helmet
-		fill(255)
-		stroke(0)
-		ellipse(gameChar_x + 2, gameChar_y - 80, 25, 25);
-		fill(0)
-		ellipse(gameChar_x - 3, gameChar_y - 80, 15, 15);
-
-		// Sun reflection on helmet
-		fill(255)
-		noStroke()
-		push()
-		translate(gameChar_x, gameChar_y - 82)
-		rotate(150)
-		ellipse(0, 0, 3, 5)
-		pop()
+		character.draw("jumping-left")
 	}
 	else if (isRight && isFalling) {
 		// jumping-right code
-		noStroke()
-		fill(244, 60, 31)
-		// Right arm
-		push()
-		translate(gameChar_x + 13, gameChar_y - 60)
-		rotate(-40)
-		ellipse(0, 0, 7, 30)
-		pop()
-
-		// Body and legs
-		push()
-		translate(gameChar_x - 1, gameChar_y - 49)
-		rotate(-30)
-		rect(0, 0, 8, 33, 5)
-		pop()
-
-		rect(gameChar_x - 5, gameChar_y - 69, 15, 30, 5)
-
-		push()
-		translate(gameChar_x - 2, gameChar_y - 51)
-		rotate(30)
-		rect(0, 0, 8, 33, 5)
-		pop()
-
-		// Backpack
-		fill(255)
-		stroke(0)
-		rect(gameChar_x - 12, gameChar_y - 107, 0.1, 50)
-		rect(gameChar_x - 15, gameChar_y - 70, 10, 30, 5);
-
-		// Helmet
-		fill(255)
-		stroke(0)
-		ellipse(gameChar_x + 2, gameChar_y - 80, 25, 25);
-		fill(0)
-		ellipse(gameChar_x + 7, gameChar_y - 80, 15, 15);
-
-		// Sun reflection on helmet
-		fill(255)
-		noStroke()
-		push()
-		translate(gameChar_x + 5, gameChar_y - 82)
-		rotate(30)
-		ellipse(0, 0, 3, 5)
-		pop()
+		character.draw("jumping-right")
 	}
 	else if (isLeft) {
 		// walking left code
-		// Left arm
-		noStroke()
-		fill(244, 60, 31)
-		push()
-		translate(gameChar_x - 8, gameChar_y - 35)
-		rotate(30)
-		ellipse(0, 0, 7, 30)
-		pop()
-
-		// Body and legs
-		push()
-		translate(gameChar_x - 1, gameChar_y - 29)
-		rotate(-20)
-		rect(0, 0, 8, 33, 5)
-		pop()
-
-		rect(gameChar_x - 5, gameChar_y - 49, 15, 30, 5)
-
-		push()
-		translate(gameChar_x - 2, gameChar_y - 31)
-		rotate(20)
-		rect(0, 0, 8, 33, 5)
-		pop()
-
-		// Backpack
-		fill(255)
-		stroke(0)
-		rect(gameChar_x + 17, gameChar_y - 87, 0.1, 50)
-		rect(gameChar_x + 10, gameChar_y - 50, 10, 30, 5);
-
-		// Helmet
-		fill(255)
-		stroke(0)
-		ellipse(gameChar_x + 2, gameChar_y - 60, 25, 25);
-		fill(0)
-		ellipse(gameChar_x - 3, gameChar_y - 60, 15, 15);
-
-		// Sun reflection on helmet
-		fill(255)
-		noStroke()
-		push()
-		translate(gameChar_x, gameChar_y - 62)
-		rotate(150)
-		ellipse(0, 0, 3, 5)
-		pop()
+		character.draw("walking-left")
 	}
 	else if (isRight) {
 		// walking right code
-		noStroke()
-		fill(244, 60, 31)
-		// Right arm
-		push()
-		translate(gameChar_x + 13, gameChar_y - 37)
-		rotate(-30)
-		ellipse(0, 0, 7, 30)
-		pop()
-
-		// Body and legs
-		push()
-		translate(gameChar_x - 1, gameChar_y - 29)
-		rotate(-20)
-		rect(0, 0, 8, 33, 5)
-		pop()
-
-		rect(gameChar_x - 5, gameChar_y - 49, 15, 30, 5)
-
-		push()
-		translate(gameChar_x - 2, gameChar_y - 31)
-		rotate(20)
-		rect(0, 0, 8, 33, 5)
-		pop()
-
-		// Backpack
-		fill(255)
-		stroke(0)
-		rect(gameChar_x - 12, gameChar_y - 87, 0.1, 50)
-		rect(gameChar_x - 15, gameChar_y - 50, 10, 30, 5);
-
-		// Helmet
-		fill(255)
-		stroke(0)
-		ellipse(gameChar_x + 2, gameChar_y - 60, 25, 25);
-		fill(0)
-		ellipse(gameChar_x + 7, gameChar_y - 60, 15, 15);
-
-		// Sun reflection on helmet
-		fill(255)
-		noStroke()
-		push()
-		translate(gameChar_x + 5, gameChar_y - 62)
-		rotate(30)
-		ellipse(0, 0, 3, 5)
-		pop()
+		character.draw("walking-right")
 	}
 	else if (isFalling || isPlummeting) {
 		// jumping facing forwards code
-		fill(255)
-		stroke(0)
-		rect(gameChar_x - 11, gameChar_y - 107, 0.1, 50)
-		rect(gameChar_x - 17.5, gameChar_y - 72, 35, 30, 5);
-
-		// Left arm
-		noStroke()
-		fill(244, 60, 31)
-		push()
-		translate(gameChar_x - 16, gameChar_y - 60)
-		rotate(40)
-		ellipse(0, 0, 7, 30)
-		pop()
-
-		// Right arm
-		push()
-		translate(gameChar_x + 17, gameChar_y - 60)
-		rotate(-40)
-		ellipse(0, 0, 7, 30)
-		pop()
-
-		// Body and legs
-		push()
-		translate(gameChar_x - 10, gameChar_y - 51)
-		rotate(10)
-		rect(0, 0, 8, 33, 5)
-		pop()
-
-		push()
-		translate(gameChar_x + 3, gameChar_y - 50)
-		rotate(-10)
-		rect(0, 0, 8, 33, 5)
-		pop()
-		rect(gameChar_x - 11, gameChar_y - 69, 23, 30, 5)
-
-		// Helmet
-		fill(255)
-		stroke(0)
-		ellipse(gameChar_x, gameChar_y - 80, 25, 25);
-		fill(0)
-		ellipse(gameChar_x, gameChar_y - 80, 15, 15);
-
-		// Sun reflection on helmet
-		fill(255)
-		noStroke()
-		push()
-		translate(gameChar_x + 3, gameChar_y - 83)
-		rotate(150)
-		ellipse(0, 0, 3, 5)
-		pop()
+		character.draw("jumping-top")
 	}
 	else {
 		// standing front facing code
-		// Backpack
-		fill(255)
-		stroke(0)
-		rect(gameChar_x - 11, gameChar_y - 87, 0.1, 50)
-		rect(gameChar_x - 17.5, gameChar_y - 52, 35, 30, 5);
-
-		// Left arm
-		noStroke()
-		fill(244, 60, 31)
-		push()
-		translate(gameChar_x - 12, gameChar_y - 35)
-		rotate(20)
-		ellipse(0, 0, 7, 30)
-		pop()
-
-		// Right arm
-		push()
-		translate(gameChar_x + 12.7, gameChar_y - 35)
-		rotate(-20)
-		ellipse(0, 0, 7, 30)
-		pop()
-
-		// Body and legs
-		rect(gameChar_x - 11, gameChar_y - 31, 8, 33, 5)
-		rect(gameChar_x + 4, gameChar_y - 31, 8, 33, 5)
-		rect(gameChar_x - 11, gameChar_y - 49, 23, 30, 5)
-
-		// Helmet
-		fill(255)
-		stroke(0)
-		ellipse(gameChar_x, gameChar_y - 60, 25, 25);
-		fill(0)
-		ellipse(gameChar_x, gameChar_y - 59, 15, 15);
-
-		// Sun reflection on helmet
-		fill(255)
-		noStroke()
-		push()
-		translate(gameChar_x + 3, gameChar_y - 62)
-		rotate(150)
-		ellipse(0, 0, 3, 5)
-		pop()
+		character.draw("standing")
 	}
 }
 
@@ -645,6 +381,8 @@ function checkPlayerDie() {
 function startGame() {
 	gameChar_x = width / 2;
 	gameChar_y = floorPos_y;
+
+	character = new Character(width / 2, floorPos_y)
 
 	// initialize scenery
 	canyons = [{ x_pos: -200, width: 100 }, { x_pos: 200, width: 100 }, { x_pos: 600, width: 100 }]
