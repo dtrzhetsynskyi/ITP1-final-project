@@ -1,14 +1,12 @@
 /*
 
-The Game Project midterm
+The Final Game Project
 
 */
 
 /////////// INITIALIZE VARIABLES //////////
 var cameraPosX = 0;
 
-var gameChar_x;
-var gameChar_y;
 var floorPos_y;
 
 var isLeft = false;
@@ -83,7 +81,7 @@ function draw() {
 	}
 
 	// draw the game character
-	drawCharacter()
+	character.draw();
 	checkPlayerDie();
 
 	// draw flagpole
@@ -122,18 +120,7 @@ function draw() {
 
 	///////////INTERACTION CODE//////////
 
-	// set isFalling depending on current game character position
-	checkFalling();
-
-	// changing y of game character when plummeting or falling
-	updateCharacterY();
-
-	// -------------- start customization for running using shift
-
-	// handle character's horizontal movement
-	updateCharacterX();
-
-	// -------------- end customization for running using shift
+	character.move();
 
 	// find collectible if the character is close to it
 	for (let i = 0; i < collectables.length; i++) {
@@ -143,18 +130,20 @@ function draw() {
 
 // function to handle key press
 function keyPressed() {
-	if (isPlummeting) return;
-
+	const SPACE_KEY = 32;
 
 	// -------------- start customization for running using shift
-	if (key === "ArrowLeft") {
+	if (keyCode === LEFT_ARROW) {
 		isLeft = true;
-	} else if (key === "ArrowRight") {
+		character.changeState(CHARACTER_STATES.walkingLeft)
+	} else if (keyCode === RIGHT_ARROW) {
 		isRight = true;
-	} else if (key === "Shift" && !isFalling) {
+		character.changeState(CHARACTER_STATES.walkingRight)
+	} else if (keyCode === SHIFT && !isFalling) {
 		isShift = true;
-	} else if (keyCode === 32 && !isFalling) { // handle space bar press
-		gameChar_y -= 100;
+		character.changeState(CHARACTER_STATES.runningRight)
+	} else if (keyCode === SPACE_KEY && !isFalling) {
+		character.changeState(CHARACTER_STATES.jumping)
 	}
 	// -------------- end customization for running using shift
 }
@@ -162,76 +151,49 @@ function keyPressed() {
 // function to handle key release
 function keyReleased() {
 	// -------------- start customization for running using shift
-	if (key === "ArrowLeft") {
-		isLeft = false;
-	} else if (key === "ArrowRight") {
-		isRight = false;
-	} else if (key === "Shift") {
-		isShift = false;
+	// if (key === "ArrowLeft") {
+	// 	isLeft = false;
+	// } else if (key === "ArrowRight") {
+	// 	isRight = false;
+	// } else if (key === "Shift") {
+	// 	isShift = false;
+	// }
+	if (keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) {
+		character.changeState(CHARACTER_STATES.standing)
 	}
+
 	// -------------- end customization for running using shift
 }
 
-function updateCharacterY() {
-	if (isPlummeting) {
-		gameChar_y += 3;
-	} else if (isFalling) {
-		gameChar_y += 2;
-	}
-}
+// function updateCharacterY() {
+// 	if (isPlummeting) {
+// 		character.y += 3;
+// 	} else if (isFalling) {
+// 		character.y += 2;
+// 	}
+// }
 
-function updateCharacterX() {
-	// -------------- start customization for running using shift
-	// determine velocity based on isShift
-	var velocity = isShift ? 1.5 : 1;
-	// -------------- end customization for running using shift
+// function updateCharacterX() {
+// 	// -------------- start customization for running using shift
+// 	// determine velocity based on isShift
+// 	var velocity = isShift ? 1.5 : 1;
+// 	// -------------- end customization for running using shift
 
-	if (isLeft && !isPlummeting) {
-		gameChar_x -= 3 * velocity;
-	} else if (isRight && !isPlummeting) {
-		gameChar_x += 3 * velocity;
-	} else if (isRight && !isPlummeting) {
-		gameChar_x += 3 * velocity;
-	}
-}
+// 	if (isLeft && !isPlummeting) {
+// 		character.x -= 3 * velocity;
+// 	} else if (isRight && !isPlummeting) {
+// 		character.x += 3 * velocity;
+// 	}
+// }
 
 function checkFalling() {
-	if (gameChar_y < floorPos_y) {
-		isFalling = true;
-	} else {
-		isFalling = false;
-	}
-}
-
-function drawCharacter() {
-	if (isLeft && isFalling) {
-		// jumping-left code
-		character.draw("jumping-left")
-	}
-	else if (isRight && isFalling) {
-		// jumping-right code
-		character.draw("jumping-right")
-	}
-	else if (isLeft) {
-		// walking left code
-		character.draw("walking-left")
-	}
-	else if (isRight) {
-		// walking right code
-		character.draw("walking-right")
-	}
-	else if (isFalling || isPlummeting) {
-		// jumping facing forwards code
-		character.draw("jumping-top")
-	}
-	else {
-		// standing front facing code
-		character.draw("standing")
+	if (character.y < floorPos_y) {
+		character.changeState(CHARACTER_STATES.isFalling)
 	}
 }
 
 function updateCameraPosition() {
-	cameraPosX = gameChar_x - width / 2;
+	cameraPosX = character.x - width / 2;
 	translate(-cameraPosX, 0)
 }
 
@@ -299,7 +261,7 @@ function drawTrees() {
 }
 
 function checkCollectable(t_collectable) {
-	if (dist(gameChar_x, gameChar_y, t_collectable.x_pos, t_collectable.y_pos) <= 45 && t_collectable.isFound == false) {
+	if (dist(character.x, character.y, t_collectable.x_pos, t_collectable.y_pos) <= 45 && t_collectable.isFound == false) {
 		t_collectable.isFound = true;
 		game_score++;
 	}
@@ -318,7 +280,7 @@ function drawCollectable(t_collectable) {
 }
 
 function checkCanyon(t_canyon) {
-	if (gameChar_x - 30 > t_canyon.x_pos && gameChar_x + 30 < t_canyon.x_pos + t_canyon.width && gameChar_y == floorPos_y) {
+	if (character.x - 30 > t_canyon.x_pos && character.x + 30 < t_canyon.x_pos + t_canyon.width && character.y == floorPos_y) {
 		isPlummeting = true;
 		isLeft = false;
 		isRight = false;
@@ -362,14 +324,14 @@ function renderFlagpole() {
 }
 
 function checkFlagpole() {
-	var distance = abs(gameChar_x - flagpole.x_pos);
+	var distance = abs(character.x - flagpole.x_pos);
 	if (distance < 15) {
 		flagpole.isReached = true;
 	}
 }
 
 function checkPlayerDie() {
-	if (gameChar_y > height + 100) {
+	if (character.y > height + 100) {
 		lives -= 1;
 
 		if (lives > 0) {
@@ -379,9 +341,6 @@ function checkPlayerDie() {
 }
 
 function startGame() {
-	gameChar_x = width / 2;
-	gameChar_y = floorPos_y;
-
 	character = new Character(width / 2, floorPos_y)
 
 	// initialize scenery
