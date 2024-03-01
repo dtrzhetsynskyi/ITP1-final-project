@@ -5,25 +5,21 @@ The Final Game Project
 */
 
 /////////// INITIALIZE VARIABLES //////////
-var cameraPosX = 0;
+const SPACE_KEY = 32;
 
-var floorPos_y;
+let cameraPosX = 0;
 
-var isLeft = false;
-var isRight = false;
-var isFalling = false;
-var isPlummeting = false;
-var isShift = false;
+let floorPos_y;
 
-var canyons;
-var trees_x;
-var clouds;
-var mountains;
-var collectables;
-var flagpole;
+let canyons;
+let trees_x;
+let clouds;
+let mountains;
+let collectables;
+let flagpole;
 
-var game_score;
-var lives;
+let game_score;
+let lives;
 
 let character;
 
@@ -41,6 +37,8 @@ function setup() {
 
 // function to draw the scenery and character
 function draw() {
+	push();
+
 	///////////DRAWING CODE//////////
 	background(100, 155, 255); //fill the sky blue
 
@@ -49,13 +47,12 @@ function draw() {
 	//draw some green ground
 	rect(0, floorPos_y, width, height - floorPos_y);
 
+
 	// draw life score
 	drawLifeScore();
 
 	// draw score
 	drawScore(game_score);
-
-	push();
 
 	// update camera position
 	updateCameraPosition();
@@ -81,17 +78,22 @@ function draw() {
 	}
 
 	// draw the game character
+	character.move();
 	character.draw();
-	checkPlayerDie();
 
 	// draw flagpole
 	renderFlagpole();
 
+	pop()
+
+	///////////INTERACTION CODE//////////
+
+	controlCharacterFall();
+	checkPlayerDie();
+
 	if (!flagpole.isReached) {
 		checkFlagpole();
 	}
-
-	pop()
 
 	if (lives < 1) {
 		fill(136, 8, 8)
@@ -118,10 +120,6 @@ function draw() {
 		return;
 	}
 
-	///////////INTERACTION CODE//////////
-
-	character.move();
-
 	// find collectible if the character is close to it
 	for (let i = 0; i < collectables.length; i++) {
 		checkCollectable(collectables[i]);
@@ -130,65 +128,45 @@ function draw() {
 
 // function to handle key press
 function keyPressed() {
-	const SPACE_KEY = 32;
-
 	// -------------- start customization for running using shift
+	if (character.isPlummeting) return; // disable input handling when plummeting 
+
 	if (keyCode === LEFT_ARROW) {
-		isLeft = true;
-		character.changeState(CHARACTER_STATES.walkingLeft)
+		character.isLeft = true;
 	} else if (keyCode === RIGHT_ARROW) {
-		isRight = true;
-		character.changeState(CHARACTER_STATES.walkingRight)
-	} else if (keyCode === SHIFT && !isFalling) {
-		isShift = true;
-		character.changeState(CHARACTER_STATES.runningRight)
-	} else if (keyCode === SPACE_KEY && !isFalling) {
-		character.changeState(CHARACTER_STATES.jumping)
+		character.isRight = true;
+	} else if (keyCode === SHIFT) {
+		character.isShift = true;
+	} else if (keyCode === SPACE_KEY && !character.isFalling) {
+		character.isJumping = true;
 	}
 	// -------------- end customization for running using shift
 }
 
 // function to handle key release
 function keyReleased() {
-	// -------------- start customization for running using shift
-	// if (key === "ArrowLeft") {
-	// 	isLeft = false;
-	// } else if (key === "ArrowRight") {
-	// 	isRight = false;
-	// } else if (key === "Shift") {
-	// 	isShift = false;
-	// }
-	if (keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) {
-		character.changeState(CHARACTER_STATES.standing)
+	if (keyCode === LEFT_ARROW) {
+		character.isLeft = false;
+	} else if (keyCode === RIGHT_ARROW) {
+		character.isRight = false;
 	}
-
-	// -------------- end customization for running using shift
 }
 
-// function updateCharacterY() {
-// 	if (isPlummeting) {
-// 		character.y += 3;
-// 	} else if (isFalling) {
-// 		character.y += 2;
-// 	}
-// }
+function controlCharacterFall() {
+	if (character.isJumping && character.jumpHeight >= JUMP_HEIGHT) {
+		character.isFalling = true;
+		character.isJumping = false;
+	} else if (character.isFalling && character.y === floorPos_y) {
+		character.jumpHeight = 0;
+		character.isFalling = false;
+	}
+}
 
-// function updateCharacterX() {
-// 	// -------------- start customization for running using shift
-// 	// determine velocity based on isShift
-// 	var velocity = isShift ? 1.5 : 1;
-// 	// -------------- end customization for running using shift
-
-// 	if (isLeft && !isPlummeting) {
-// 		character.x -= 3 * velocity;
-// 	} else if (isRight && !isPlummeting) {
-// 		character.x += 3 * velocity;
-// 	}
-// }
-
-function checkFalling() {
-	if (character.y < floorPos_y) {
-		character.changeState(CHARACTER_STATES.isFalling)
+function checkCanyon(t_canyon) {
+	if (character.x - 20 > t_canyon.x_pos && character.x + 20 < t_canyon.x_pos + t_canyon.width && character.y == floorPos_y) {
+		character.isPlummeting = true;
+		character.isLeft = false;
+		character.isRight = false;
 	}
 }
 
@@ -279,14 +257,6 @@ function drawCollectable(t_collectable) {
 	}
 }
 
-function checkCanyon(t_canyon) {
-	if (character.x - 30 > t_canyon.x_pos && character.x + 30 < t_canyon.x_pos + t_canyon.width && character.y == floorPos_y) {
-		isPlummeting = true;
-		isLeft = false;
-		isRight = false;
-	}
-}
-
 function drawCanyon(t_canyon) {
 	fill(92, 73, 73);
 	rect(t_canyon.x_pos, floorPos_y, t_canyon.width, height)
@@ -352,10 +322,4 @@ function startGame() {
 	flagpole = { isReached: false, x_pos: 1200 }
 
 	game_score = 0;
-
-	isLeft = false;
-	isRight = false;
-	isFalling = false;
-	isPlummeting = false;
-	isShift = false;
 }
