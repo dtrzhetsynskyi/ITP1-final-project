@@ -57,8 +57,10 @@ class Character {
       this.drawWalkingTo("left")
     } else if (this.isRight) {
       this.drawWalkingTo("right")
-    } else if (this.isFalling || this.isPlummeting) {
+    } else if (this.isFalling) {
       this.drawFalling();
+    } else if (this.isPlummeting) {
+      this.drawPlummeting();
     } else {
       this.drawStanding();
     }
@@ -289,6 +291,59 @@ class Character {
     push()
     translate(this.x + 17, this.y - 42)
     rotate(-40)
+    ellipse(0, 0, 7, 30)
+    pop()
+
+    // Body and legs
+    push()
+    translate(this.x - 10, this.y - 33)
+    rotate(10)
+    rect(0, 0, 8, 33, 5)
+    pop()
+
+    push()
+    translate(this.x + 3, this.y - 32)
+    rotate(-10)
+    rect(0, 0, 8, 33, 5)
+    pop()
+    rect(this.x - 11, this.y - 51, 23, 30, 5)
+
+    // Helmet
+    fill(255)
+    stroke(0)
+    ellipse(this.x, this.y - 62, 25, 25);
+    fill(0)
+    ellipse(this.x, this.y - 63, 15, 15);
+
+    // Sun reflection on helmet
+    fill(255)
+    noStroke()
+    push()
+    translate(this.x + 3, this.y - 66)
+    rotate(150)
+    ellipse(0, 0, 3, 5)
+    pop()
+  }
+
+  drawPlummeting() {
+    fill(255)
+    stroke(0)
+    rect(this.x - 11, this.y - 89, 0.1, 50)
+    rect(this.x - 17.5, this.y - 54, 35, 30, 5);
+
+    // Left arm
+    noStroke()
+    fill(244, 60, 31)
+    push()
+    translate(this.x - 16, this.y - 50)
+    rotate(120)
+    ellipse(0, 0, 7, 30)
+    pop()
+
+    // Right arm
+    push()
+    translate(this.x + 17, this.y - 50)
+    rotate(-120)
     ellipse(0, 0, 7, 30)
     pop()
 

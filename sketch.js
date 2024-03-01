@@ -43,10 +43,9 @@ function draw() {
 	background(100, 155, 255); //fill the sky blue
 
 	noStroke();
-	fill(0, 155, 0);
+	fill(227, 133, 52);
 	//draw some green ground
 	rect(0, floorPos_y, width, height - floorPos_y);
-
 
 	// draw life score
 	drawLifeScore();
@@ -258,7 +257,7 @@ function drawCollectable(t_collectable) {
 }
 
 function drawCanyon(t_canyon) {
-	fill(92, 73, 73);
+	fill(148, 84, 36);
 	rect(t_canyon.x_pos, floorPos_y, t_canyon.width, height)
 }
 
