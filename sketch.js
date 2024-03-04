@@ -24,6 +24,8 @@ let lives;
 let character;
 let scenery;
 
+let parallaxStarsLayer;
+
 // function to initialize variables and environment
 function setup() {
 	createCanvas(1024, 576);
@@ -35,6 +37,12 @@ function setup() {
 
 	scenery = new Scenery(floorPos_y);
 
+	parallaxStarsLayer = createGraphics(1024, 150);
+	parallaxMountainsLayer = createGraphics(3000, 350);
+
+	scenery.drawBackgroundStars(parallaxStarsLayer);
+	scenery.drawBackgroundMountains(parallaxMountainsLayer);
+
 	startGame();
 }
 
@@ -42,15 +50,20 @@ function setup() {
 function draw() {
 	push();
 
-	///////////DRAWING CODE//////////
 	scenery.drawStatic();
+	push();
+	// translate(character.x - width / 2.5 - 200, 0)
+	image(parallaxStarsLayer, 0, 0);
+	pop();
+
+	image(parallaxMountainsLayer, -400, floorPos_y - BACKGROUND_MOUNTAINS_HEIGHT)
 
 	// update camera position
 	updateCameraPosition();
 
-	scenery.drawBackgroundMountains();
+
+	// scenery.drawBackgroundMountains();
 	scenery.drawHopper();
-	// scenery.drawBackgroundStars();
 
 	// draw clouds
 	// drawClouds()
