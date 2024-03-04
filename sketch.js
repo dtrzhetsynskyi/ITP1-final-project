@@ -22,6 +22,7 @@ let game_score;
 let lives;
 
 let character;
+let scenery;
 
 // function to initialize variables and environment
 function setup() {
@@ -32,6 +33,8 @@ function setup() {
 	floorPos_y = height * 3 / 4;
 	lives = 3;
 
+	scenery = new Scenery(floorPos_y);
+
 	startGame();
 }
 
@@ -40,48 +43,50 @@ function draw() {
 	push();
 
 	///////////DRAWING CODE//////////
-	background(100, 155, 255); //fill the sky blue
-
-	noStroke();
-	fill(227, 133, 52);
-	//draw some green ground
-	rect(0, floorPos_y, width, height - floorPos_y);
-
-	// draw life score
-	drawLifeScore();
-
-	// draw score
-	drawScore(game_score);
+	scenery.drawStatic();
 
 	// update camera position
 	updateCameraPosition();
 
+	scenery.drawBackgroundMountains();
+	scenery.drawHopper();
+	// scenery.drawBackgroundStars();
+
 	// draw clouds
-	drawClouds()
+	// drawClouds()
+
+	// push()
+	// translate(character.x - width / 2, 0)
+	// // draw life score
+	// drawLifeScore();
+
+	// // draw score
+	// drawScore(game_score);
+	// pop()
 
 	// draw the mountains
-	drawMountains()
+	// drawMountains()
 
 	// draw the canyon
 	for (let i = 0; i < canyons.length; i++) {
-		drawCanyon(canyons[i]);
+		canyons[i].draw();
 		checkCanyon(canyons[i]);
 	}
 
 	// draw trees
-	drawTrees();
+	// drawTrees();
 
 	// draw collectable
-	for (let i = 0; i < collectables.length; i++) {
-		drawCollectable(collectables[i]);
-	}
+	// for (let i = 0; i < collectables.length; i++) {
+	// 	drawCollectable(collectables[i]);
+	// }
 
 	// draw the game character
 	character.move();
 	character.draw();
 
 	// draw flagpole
-	renderFlagpole();
+	// renderFlagpole();
 
 	pop()
 
@@ -123,6 +128,13 @@ function draw() {
 	for (let i = 0; i < collectables.length; i++) {
 		checkCollectable(collectables[i]);
 	}
+
+	//A helpful mouse pointer
+	push();
+	fill(0);
+	noStroke();
+	text(mouseX + "," + mouseY, mouseX, mouseY);
+	pop();
 }
 
 // function to handle key press
@@ -162,7 +174,7 @@ function controlCharacterFall() {
 }
 
 function checkCanyon(t_canyon) {
-	if (character.x - 20 > t_canyon.x_pos && character.x + 20 < t_canyon.x_pos + t_canyon.width && character.y == floorPos_y) {
+	if (character.x - 40 > t_canyon.x && character.x + 40 < t_canyon.x + t_canyon.width && character.y == floorPos_y) {
 		character.isPlummeting = true;
 		character.isLeft = false;
 		character.isRight = false;
@@ -310,10 +322,10 @@ function checkPlayerDie() {
 }
 
 function startGame() {
-	character = new Character(width / 2, floorPos_y)
+	character = new Character(width / 2, floorPos_y);
 
 	// initialize scenery
-	canyons = [{ x_pos: -200, width: 100 }, { x_pos: 200, width: 100 }, { x_pos: 600, width: 100 }]
+	canyons = [new Canyon(700, floorPos_y, 300, height - floorPos_y)]
 	collectables = [{ x_pos: 255, y_pos: 350, size: 35, isFound: false }, { x_pos: 800, y_pos: 390, size: 35, isFound: false }, { x_pos: 1000, y_pos: 390, size: 35, isFound: false }, { x_pos: -800, y_pos: 390, size: 35, isFound: false }]
 	trees_x = [100, 500, 800, 1200];
 	clouds = [{ x_pos: -200, y_pos: 200 }, { x_pos: 200, y_pos: 100 }, { x_pos: 500, y_pos: 100 }, { x_pos: 800, y_pos: 100 }, { x_pos: 1000, y_pos: 100 }, { x_pos: 1200, y_pos: 100 }]
