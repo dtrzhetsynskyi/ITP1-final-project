@@ -1,7 +1,4 @@
 // Configuration constants
-const BACKGROUND_MOUNTAINS_HEIGHT = 350;
-const BACKGROUND_MOUNTAINS_WIDTH = 3000;
-
 const HOPPER_POSITION_X = 250;
 const HOPPER_POSITION_Y = 440;
 
@@ -44,55 +41,6 @@ class Scenery {
 
     fill(223, 157, 96)
     rect(0, this.floorPos_y, width, 20)
-  }
-
-  // Draw background moutains using Perlin noise algorithm.
-  // Algorithm Reference: https://en.wikipedia.org/wiki/Perlin_noise
-  drawBackgroundMountains(graphicsLayer) {
-    let xoff1 = 0;
-    let xoff2 = 5000;
-    let xoff3 = 10000;
-
-    graphicsLayer.noStroke();
-
-    graphicsLayer.fill(106, 104, 109);
-    for (let x = 0; x < BACKGROUND_MOUNTAINS_WIDTH; x++) {
-      let y = noise(xoff1) * BACKGROUND_MOUNTAINS_HEIGHT;
-      graphicsLayer.rect(x, graphicsLayer.height - y, 1, y)
-
-      xoff1 += 0.01;
-    }
-
-    graphicsLayer.fill(71, 69, 74);
-    for (let x = 0; x < BACKGROUND_MOUNTAINS_WIDTH; x++) {
-      let y = noise(xoff2) * (BACKGROUND_MOUNTAINS_HEIGHT - 100);
-      graphicsLayer.rect(x, graphicsLayer.height - y, 1, y)
-
-      xoff2 += 0.01;
-    }
-
-    graphicsLayer.fill(53, 53, 55);
-    for (let x = 0; x < BACKGROUND_MOUNTAINS_WIDTH; x++) {
-      let y = noise(xoff3) * (BACKGROUND_MOUNTAINS_HEIGHT - 200);
-      graphicsLayer.rect(x, graphicsLayer.height - y, 1, y)
-
-      xoff3 += 0.01;
-    }
-  }
-
-  // Draw background stars
-  drawBackgroundStars(graphicsLayer) {
-    graphicsLayer.fill(255);
-    graphicsLayer.noStroke();
-    for (let i = 0; i < 50; i++) {
-      const x = random() * 1024;
-      const y = map(random(), 0, 1, 10, 150);
-      const size = map(random(), 0, 1, 1, 4);
-
-      graphicsLayer.drawingContext.shadowBlur = 32;
-      graphicsLayer.drawingContext.shadowColor = color(255);
-      graphicsLayer.ellipse(x, y, size, size)
-    }
   }
 
   // Draw a static space hopper

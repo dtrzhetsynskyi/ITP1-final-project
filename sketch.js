@@ -23,26 +23,28 @@ let lives;
 
 let character;
 let scenery;
+let backgroundMountains;
 
-let parallaxStars;
-let parallaxMountains;
+let parallaxStarsGraphics;
+let parallaxMountainsGraphics;
 
 // function to initialize variables and environment
 function setup() {
 	createCanvas(1024, 576);
-
 	angleMode(DEGREES)
 
 	floorPos_y = height * 3 / 4;
 	lives = 3;
 
+	parallaxStarsGraphics = createGraphics(1024, 150);
+	parallaxMountainsGraphics = createGraphics(3000, 350);
+
 	scenery = new Scenery(floorPos_y);
+	backgroundMountains = new BackgroundMountains();
+	stars = new Stars();
 
-	parallaxStars = createGraphics(1024, 150);
-	parallaxMountains = createGraphics(3000, 350);
-
-	scenery.drawBackgroundStars(parallaxStars);
-	scenery.drawBackgroundMountains(parallaxMountains);
+	backgroundMountains.renderTo(parallaxMountainsGraphics);
+	stars.renderTo(parallaxStarsGraphics);
 
 	startGame();
 }
@@ -55,12 +57,12 @@ function draw() {
 
 	push();
 	translate(-character.x * 0.05, 0)
-	image(parallaxStars, 0, 0);
+	image(parallaxStarsGraphics, 0, 0);
 	pop();
 
 	push();
 	translate(-character.x * 0.2, 0)
-	image(parallaxMountains, -400, floorPos_y - BACKGROUND_MOUNTAINS_HEIGHT)
+	image(parallaxMountainsGraphics, -400, floorPos_y - BACKGROUND_MOUNTAINS_HEIGHT)
 	pop();
 
 	// update camera position
@@ -93,7 +95,7 @@ function draw() {
 	character.draw();
 
 	// draw flagpole
-	// renderFlagpole();
+	renderFlagpole();
 
 	pop()
 
@@ -101,6 +103,11 @@ function draw() {
 
 	controlCharacterFall();
 	checkPlayerDie();
+
+	// find collectible if the character is close to it
+	for (let i = 0; i < collectables.length; i++) {
+		checkCollectable(collectables[i]);
+	}
 
 	if (!flagpole.isReached) {
 		checkFlagpole();
@@ -129,11 +136,6 @@ function draw() {
 		pop()
 
 		return;
-	}
-
-	// find collectible if the character is close to it
-	for (let i = 0; i < collectables.length; i++) {
-		checkCollectable(collectables[i]);
 	}
 
 	//A helpful mouse pointer
