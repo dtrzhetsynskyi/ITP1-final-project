@@ -102,6 +102,7 @@ function draw() {
 	///////////INTERACTION CODE//////////
 
 	controlCharacterFall();
+	restrictCharacterMovement();
 	checkPlayerDie();
 
 	// find collectible if the character is close to it
@@ -151,7 +152,7 @@ function keyPressed() {
 	// -------------- start customization for running using shift
 	if (character.isPlummeting) return; // disable input handling when plummeting 
 
-	if (keyCode === LEFT_ARROW) {
+	if (keyCode === LEFT_ARROW && character.x > HOPPER_POSITION_X + 100) {
 		character.isLeft = true;
 	} else if (keyCode === RIGHT_ARROW) {
 		character.isRight = true;
@@ -179,6 +180,12 @@ function controlCharacterFall() {
 	} else if (character.isFalling && character.y === floorPos_y) {
 		character.jumpHeight = 0;
 		character.isFalling = false;
+	}
+}
+
+function restrictCharacterMovement() {
+	if (character.x <= HOPPER_POSITION_X + 100) {
+		character.isLeft = false;
 	}
 }
 
