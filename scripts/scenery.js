@@ -31,6 +31,7 @@ class Scenery {
     gradient.addColorStop(0, c2);
     gradient.addColorStop(1, c1);
     drawingContext.fillStyle = gradient;
+
     rect(0, 0, width, height);
     pop()
   }
@@ -52,7 +53,8 @@ class Scenery {
     let xoff2 = 5000;
     let xoff3 = 10000;
 
-    // fill(150, 85, 29)
+    graphicsLayer.noStroke();
+
     graphicsLayer.fill(106, 104, 109);
     for (let x = 0; x < BACKGROUND_MOUNTAINS_WIDTH; x++) {
       let y = noise(xoff1) * BACKGROUND_MOUNTAINS_HEIGHT;
@@ -61,7 +63,6 @@ class Scenery {
       xoff1 += 0.01;
     }
 
-    // fill(119, 68, 20)
     graphicsLayer.fill(71, 69, 74);
     for (let x = 0; x < BACKGROUND_MOUNTAINS_WIDTH; x++) {
       let y = noise(xoff2) * (BACKGROUND_MOUNTAINS_HEIGHT - 100);
@@ -70,7 +71,6 @@ class Scenery {
       xoff2 += 0.01;
     }
 
-    // fill(89, 50, 17)
     graphicsLayer.fill(53, 53, 55);
     for (let x = 0; x < BACKGROUND_MOUNTAINS_WIDTH; x++) {
       let y = noise(xoff3) * (BACKGROUND_MOUNTAINS_HEIGHT - 200);
@@ -84,7 +84,7 @@ class Scenery {
   drawBackgroundStars(graphicsLayer) {
     graphicsLayer.fill(255);
     graphicsLayer.noStroke();
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 50; i++) {
       const x = random() * 1024;
       const y = map(random(), 0, 1, 10, 150);
       const size = map(random(), 0, 1, 1, 4);
@@ -130,7 +130,7 @@ class Scenery {
     ellipse(HOPPER_POSITION_X + 63, this.floorPos_y + 10, 30, 10)
 
     // draw part
-    rect(HOPPER_POSITION_X - 30, HOPPER_POSITION_Y - 290, 60, 30)
+    rect(HOPPER_POSITION_X - 30, HOPPER_POSITION_Y - 270, 60, 30)
 
     // draw Ukrainian flag
     push();

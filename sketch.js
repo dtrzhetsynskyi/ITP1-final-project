@@ -24,7 +24,8 @@ let lives;
 let character;
 let scenery;
 
-let parallaxStarsLayer;
+let parallaxStars;
+let parallaxMountains;
 
 // function to initialize variables and environment
 function setup() {
@@ -37,11 +38,11 @@ function setup() {
 
 	scenery = new Scenery(floorPos_y);
 
-	parallaxStarsLayer = createGraphics(1024, 150);
-	parallaxMountainsLayer = createGraphics(3000, 350);
+	parallaxStars = createGraphics(1024, 150);
+	parallaxMountains = createGraphics(3000, 350);
 
-	scenery.drawBackgroundStars(parallaxStarsLayer);
-	scenery.drawBackgroundMountains(parallaxMountainsLayer);
+	scenery.drawBackgroundStars(parallaxStars);
+	scenery.drawBackgroundMountains(parallaxMountains);
 
 	startGame();
 }
@@ -51,31 +52,24 @@ function draw() {
 	push();
 
 	scenery.drawStatic();
+
 	push();
-	// translate(character.x - width / 2.5 - 200, 0)
-	image(parallaxStarsLayer, 0, 0);
+	translate(-character.x * 0.05, 0)
+	image(parallaxStars, 0, 0);
 	pop();
 
-	image(parallaxMountainsLayer, -400, floorPos_y - BACKGROUND_MOUNTAINS_HEIGHT)
+	push();
+	translate(-character.x * 0.2, 0)
+	image(parallaxMountains, -400, floorPos_y - BACKGROUND_MOUNTAINS_HEIGHT)
+	pop();
 
 	// update camera position
 	updateCameraPosition();
 
-
-	// scenery.drawBackgroundMountains();
 	scenery.drawHopper();
 
 	// draw clouds
 	// drawClouds()
-
-	// push()
-	// translate(character.x - width / 2, 0)
-	// // draw life score
-	// drawLifeScore();
-
-	// // draw score
-	// drawScore(game_score);
-	// pop()
 
 	// draw the mountains
 	// drawMountains()
