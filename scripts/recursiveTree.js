@@ -18,8 +18,7 @@ class RecursiveTree {
 
     this.branches.push(new Branch(startVector, endVector));
     for (let i = 0; i < numberOfBranches; i++) {
-      this.branches.push(this.branches[i].getLeft());
-      this.branches.push(this.branches[i].getRight());
+      this.branches.push(...this.branches[i].getBranchesArray())
     }
   }
 
@@ -49,20 +48,19 @@ class Branch {
     pop();
   }
 
-  getLeft() {
-    const dirL = p5.Vector.sub(this.endVector, this.startVector);
-    dirL.rotate(BRANCH_ROTATION_DEGREES);
-    dirL.mult(BRANCH_SHRINK);
-    const newEndL = p5.Vector.add(this.endVector, dirL);
-    const branchL = new Branch(this.endVector, newEndL);
-    return branchL;
-  };
-  getRight() {
-    const dirL = p5.Vector.sub(this.endVector, this.startVector);
-    dirL.rotate(-BRANCH_ROTATION_DEGREES);
-    dirL.mult(BRANCH_SHRINK);
-    const newEndL = p5.Vector.add(this.endVector, dirL);
-    const branchL = new Branch(this.endVector, newEndL);
-    return branchL;
-  };
+  getBranchesArray() {
+    const leftVector = p5.Vector.sub(this.endVector, this.startVector);
+    const rightVector = p5.Vector.sub(this.endVector, this.startVector);
+
+    leftVector.rotate(BRANCH_ROTATION_DEGREES);
+    leftVector.mult(BRANCH_SHRINK);
+
+    rightVector.rotate(-BRANCH_ROTATION_DEGREES);
+    rightVector.mult(BRANCH_SHRINK);
+
+    const leftBranch = new Branch(this.endVector, p5.Vector.add(this.endVector, leftVector));
+    const rightBranch = new Branch(this.endVector, p5.Vector.add(this.endVector, rightVector));
+
+    return [leftBranch, rightBranch];
+  }
 }

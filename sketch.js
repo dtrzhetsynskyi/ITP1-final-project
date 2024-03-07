@@ -12,7 +12,6 @@ let cameraPosX = 0;
 let floorPos_y;
 
 let canyons;
-let trees_x;
 let clouds;
 let mountains;
 let collectables;
@@ -26,37 +25,48 @@ let scenery;
 let backgroundMountains;
 let recursiveTrees = [];
 let rocket;
+let cloud;
+let cloudGraphicsLayer;
 
 let parallaxStarsGraphics;
 let parallaxMountainsGraphics;
 let recursiveTreeGraphics;
 
+let cloudOffset = 0;
+
 // function to initialize variables and environment
 function setup() {
 	createCanvas(1024, 576);
-	angleMode(DEGREES)
+	angleMode(DEGREES);
 
 	floorPos_y = height * 3 / 4;
 	lives = 3;
 
-	// frameRate(60);
-
 	parallaxStarsGraphics = createGraphics(1024, 150);
 	parallaxMountainsGraphics = createGraphics(3000, 350);
 	recursiveTreeGraphics = createGraphics(300, 560);
+	cloudGraphicsLayer = createGraphics(3000, floorPos_y);
 
+	cloud = new Cloud();
 	stars = new Stars();
 	backgroundMountains = new BackgroundMountains();
 	scenery = new Scenery(floorPos_y);
 	mountains = [new Mountain(200, floorPos_y, 200, 200)];
 	rocket = new Rocket(250, floorPos_y);
 	const recursiveTree = new RecursiveTree(recursiveTreeGraphics);
-	recursiveTrees = [{ x: width / 2, y: floorPos_y }];
+	recursiveTrees = [{ x: width / 2 + 100, y: floorPos_y }];
 	canyons = [new Canyon(800, floorPos_y, 300, height - floorPos_y)]
 
 	stars.renderTo(parallaxStarsGraphics);
 	backgroundMountains.renderTo(parallaxMountainsGraphics);
 	recursiveTree.render();
+	cloud.renderTo(cloudGraphicsLayer);
+
+	// let mask = createGraphics(200, 100);
+	// mask.ellipse(0, 0, 200, 100);
+
+	// cloudGraphicsLayer = cloudGraphicsLayer.get();
+	// cloudGraphicsLayer.mask(mask)
 
 	startGame();
 }
@@ -66,10 +76,11 @@ function draw() {
 	push();
 
 	scenery.drawStatic();
-
-	let fps = parseInt(frameRate());
-	textSize(20)
-	text(fps, 50, 50);
+	push()
+	translate(cloudOffset, 0)
+	image(cloudGraphicsLayer, -1000, 0)
+	pop()
+	cloudOffset += 0.1;
 
 	push();
 	translate(-character.x * 0.05, 0)
@@ -93,9 +104,6 @@ function draw() {
 	}
 
 	rocket.render();
-
-	// draw clouds
-	// drawClouds()
 
 	// draw the mountains
 	// for (let i = 0; i < mountains.length; i++) {
@@ -121,6 +129,17 @@ function draw() {
 	renderFlagpole();
 
 	pop()
+
+	let fps = parseInt(frameRate());
+	textSize(20)
+	text(fps, 50, 50);
+
+	//A helpful mouse pointer
+	push();
+	fill(0);
+	noStroke();
+	text(mouseX + "," + mouseY, mouseX, mouseY);
+	pop();
 
 	///////////INTERACTION CODE//////////
 
@@ -161,13 +180,6 @@ function draw() {
 
 	// 	return;
 	// }
-
-	//A helpful mouse pointer
-	push();
-	fill(0);
-	noStroke();
-	text(mouseX + "," + mouseY, mouseX, mouseY);
-	pop();
 }
 
 // function to handle key press
@@ -225,53 +237,6 @@ function updateCameraPosition() {
 	translate(-cameraPosX, 0)
 }
 
-function drawClouds() {
-	for (var i = 0; i < clouds.length; i++) {
-		var cloud = clouds[i];
-
-		noStroke();
-		fill(221, 242, 253);
-		ellipse(cloud.x_pos - 20, cloud.y_pos - 20, 50, 50);
-		ellipse(cloud.x_pos + 30, cloud.y_pos - 20, 60, 60);
-		ellipse(cloud.x_pos + 60, cloud.y_pos + 5, 50, 50);
-		ellipse(cloud.x_pos - 60, cloud.y_pos, 60, 60);
-		ellipse(cloud.x_pos - 30, cloud.y_pos + 25, 50, 50);
-		ellipse(cloud.x_pos + 20, cloud.y_pos + 25, 50, 50);
-		ellipse(cloud.x_pos + 10, cloud.y_pos + 10, 60, 60);
-	}
-}
-
-function drawTrees() {
-	for (var i = 0; i < trees_x.length; i++) {
-		var treePos_x = trees_x[i];
-
-		fill(139, 69, 19);
-		beginShape();
-		vertex(treePos_x, floorPos_y);
-		vertex(treePos_x + 20, floorPos_y);
-		vertex(treePos_x + 20, floorPos_y - 125);
-		vertex(treePos_x, floorPos_y - 125);
-		endShape();
-
-		beginShape()
-		vertex(treePos_x, floorPos_y - 55)
-		vertex(treePos_x - 30, floorPos_y - 105);
-		vertex(treePos_x, floorPos_y - 70);
-		endShape();
-
-		beginShape()
-		vertex(treePos_x + 20, floorPos_y - 55)
-		vertex(treePos_x + 50, floorPos_y - 105);
-		vertex(treePos_x + 20, floorPos_y - 70);
-		endShape();
-
-		fill(55, 146, 55)
-		ellipse(treePos_x + 10, floorPos_y - 145, 90, 90);
-		ellipse(treePos_x - 30, floorPos_y - 125, 70, 70);
-		ellipse(treePos_x + 50, floorPos_y - 125, 60, 60);
-	}
-}
-
 function checkCollectable(t_collectable) {
 	if (dist(character.x, character.y, t_collectable.x_pos, t_collectable.y_pos) <= 45 && t_collectable.isFound == false) {
 		t_collectable.isFound = true;
@@ -290,25 +255,6 @@ function drawCollectable(t_collectable) {
 		text("B", t_collectable.x_pos - 6, t_collectable.y_pos + 6);
 	}
 }
-
-function drawCanyon(t_canyon) {
-	fill(148, 84, 36);
-	rect(t_canyon.x_pos, floorPos_y, t_canyon.width, height)
-}
-
-function drawScore(t_score) {
-	fill(255, 215, 0)
-	textStyle(BOLD);
-	textSize(16);
-	text(`Game score: ${t_score}`, 50, 50)
-}
-
-function drawLifeScore() {
-	fill(170, 74, 68)
-	for (var i = 0; i < lives; i++) {
-		ellipse(65 + i * 40, 100, 30, 30);
-	}
-};
 
 function renderFlagpole() {
 	push();
@@ -349,7 +295,6 @@ function startGame() {
 
 	// initialize scenery
 	collectables = [{ x_pos: 255, y_pos: 350, size: 35, isFound: false }, { x_pos: 800, y_pos: 390, size: 35, isFound: false }, { x_pos: 1000, y_pos: 390, size: 35, isFound: false }, { x_pos: -800, y_pos: 390, size: 35, isFound: false }]
-	trees_x = [100, 500, 800, 1200];
 	clouds = [{ x_pos: -200, y_pos: 200 }, { x_pos: 200, y_pos: 100 }, { x_pos: 500, y_pos: 100 }, { x_pos: 800, y_pos: 100 }, { x_pos: 1000, y_pos: 100 }, { x_pos: 1200, y_pos: 100 }]
 	flagpole = { isReached: false, x_pos: 1200 }
 
