@@ -25,9 +25,11 @@ let character;
 let scenery;
 let backgroundMountains;
 let recursiveTrees = [];
+let rocket;
 
 let parallaxStarsGraphics;
 let parallaxMountainsGraphics;
+let recursiveTreeGraphics;
 
 // function to initialize variables and environment
 function setup() {
@@ -37,17 +39,24 @@ function setup() {
 	floorPos_y = height * 3 / 4;
 	lives = 3;
 
+	// frameRate(60);
+
 	parallaxStarsGraphics = createGraphics(1024, 150);
 	parallaxMountainsGraphics = createGraphics(3000, 350);
+	recursiveTreeGraphics = createGraphics(300, 560);
 
-	scenery = new Scenery(floorPos_y);
-	backgroundMountains = new BackgroundMountains();
 	stars = new Stars();
+	backgroundMountains = new BackgroundMountains();
+	scenery = new Scenery(floorPos_y);
 	mountains = [new Mountain(200, floorPos_y, 200, 200)];
-	recursiveTrees = [new RecursiveTree(width / 2, floorPos_y)]
+	rocket = new Rocket(250, floorPos_y);
+	const recursiveTree = new RecursiveTree(recursiveTreeGraphics);
+	recursiveTrees = [{ x: width / 2, y: floorPos_y }];
+	canyons = [new Canyon(800, floorPos_y, 300, height - floorPos_y)]
 
-	backgroundMountains.renderTo(parallaxMountainsGraphics);
 	stars.renderTo(parallaxStarsGraphics);
+	backgroundMountains.renderTo(parallaxMountainsGraphics);
+	recursiveTree.render();
 
 	startGame();
 }
@@ -75,7 +84,15 @@ function draw() {
 	// update camera position
 	updateCameraPosition();
 
-	scenery.drawHopper();
+	// draw trees
+	for (let i = 0; i < recursiveTrees.length; i++) {
+		const tree = recursiveTrees[i];
+		if (tree.x + 140 >= character.x - width / 2 && tree.x - 140 <= character.x + width / 2) {
+			image(recursiveTreeGraphics, tree.x - recursiveTreeGraphics.width / 2, tree.y - recursiveTreeGraphics.height / 2);
+		}
+	}
+
+	rocket.render();
 
 	// draw clouds
 	// drawClouds()
@@ -89,14 +106,6 @@ function draw() {
 	for (let i = 0; i < canyons.length; i++) {
 		canyons[i].draw();
 		checkCanyon(canyons[i]);
-	}
-
-	// draw trees
-	for (let i = 0; i < recursiveTrees.length; i++) {
-		const tree = recursiveTrees[i];
-		if (tree.x + 140 >= character.x - width / 2 && tree.x - 140 <= character.x + width / 2) {
-			recursiveTrees[i].render();
-		}
 	}
 
 	// draw collectable
@@ -124,34 +133,34 @@ function draw() {
 		checkCollectable(collectables[i]);
 	}
 
-	if (!flagpole.isReached) {
-		checkFlagpole();
-	}
+	// if (!flagpole.isReached) {
+	// 	checkFlagpole();
+	// }
 
-	if (lives < 1) {
-		fill(136, 8, 8)
-		textStyle(BOLD);
-		textSize(30);
-		push()
-		textAlign(CENTER)
-		text(`Game over. Press space to continue.`, width / 2, height / 2)
-		pop()
+	// if (lives < 1) {
+	// 	fill(136, 8, 8)
+	// 	textStyle(BOLD);
+	// 	textSize(30);
+	// 	push()
+	// 	textAlign(CENTER)
+	// 	text(`Game over. Press space to continue.`, width / 2, height / 2)
+	// 	pop()
 
-		return;
-	}
+	// 	return;
+	// }
 
-	if (flagpole.isReached) {
-		fill(255, 215, 0)
+	// if (flagpole.isReached) {
+	// 	fill(255, 215, 0)
 
-		push()
-		textStyle(BOLD);
-		textSize(30);
-		textAlign(CENTER)
-		text(`Level complete. Press space to continue.`, width / 2, height / 2)
-		pop()
+	// 	push()
+	// 	textStyle(BOLD);
+	// 	textSize(30);
+	// 	textAlign(CENTER)
+	// 	text(`Level complete. Press space to continue.`, width / 2, height / 2)
+	// 	pop()
 
-		return;
-	}
+	// 	return;
+	// }
 
 	//A helpful mouse pointer
 	push();
@@ -166,7 +175,7 @@ function keyPressed() {
 	// -------------- start customization for running using shift
 	if (character.isPlummeting) return; // disable input handling when plummeting 
 
-	if (keyCode === LEFT_ARROW && character.x > HOPPER_POSITION_X + 100) {
+	if (keyCode === LEFT_ARROW && character.x > rocket.x + 130) {
 		character.isLeft = true;
 	} else if (keyCode === RIGHT_ARROW) {
 		character.isRight = true;
@@ -198,7 +207,7 @@ function controlCharacterFall() {
 }
 
 function restrictCharacterMovement() {
-	if (character.x <= HOPPER_POSITION_X + 100) {
+	if (character.x <= rocket.x + 130) {
 		character.isLeft = false;
 	}
 }
@@ -339,7 +348,6 @@ function startGame() {
 	character = new Character(width / 2, floorPos_y);
 
 	// initialize scenery
-	canyons = [new Canyon(700, floorPos_y, 300, height - floorPos_y)]
 	collectables = [{ x_pos: 255, y_pos: 350, size: 35, isFound: false }, { x_pos: 800, y_pos: 390, size: 35, isFound: false }, { x_pos: 1000, y_pos: 390, size: 35, isFound: false }, { x_pos: -800, y_pos: 390, size: 35, isFound: false }]
 	trees_x = [100, 500, 800, 1200];
 	clouds = [{ x_pos: -200, y_pos: 200 }, { x_pos: 200, y_pos: 100 }, { x_pos: 500, y_pos: 100 }, { x_pos: 800, y_pos: 100 }, { x_pos: 1000, y_pos: 100 }, { x_pos: 1200, y_pos: 100 }]

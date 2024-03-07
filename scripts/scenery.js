@@ -1,7 +1,3 @@
-// Configuration constants
-const HOPPER_POSITION_X = 250;
-const HOPPER_POSITION_Y = 440;
-
 class Scenery {
   floorPos_y = 0;
 
@@ -41,52 +37,5 @@ class Scenery {
 
     fill(223, 157, 96)
     rect(0, this.floorPos_y, width, 20)
-  }
-
-  // Draw a static space hopper
-  drawHopper() {
-    // draw thrusters
-    push()
-    fill(255)
-    stroke(0)
-    strokeWeight(2)
-    beginShape()
-    vertex(HOPPER_POSITION_X - 25, HOPPER_POSITION_Y - 40)
-    vertex(HOPPER_POSITION_X - 21, HOPPER_POSITION_Y - 62)
-    vertex(HOPPER_POSITION_X - 5, HOPPER_POSITION_Y - 62)
-    vertex(HOPPER_POSITION_X - 1, HOPPER_POSITION_Y - 40)
-    endShape()
-
-    beginShape()
-    vertex(HOPPER_POSITION_X + 2, HOPPER_POSITION_Y - 40)
-    vertex(HOPPER_POSITION_X + 6, HOPPER_POSITION_Y - 62)
-    vertex(HOPPER_POSITION_X + 22, HOPPER_POSITION_Y - 62)
-    vertex(HOPPER_POSITION_X + 26, HOPPER_POSITION_Y - 40)
-    endShape()
-    pop();
-
-    // draw body
-    fill(255)
-    rect(HOPPER_POSITION_X - 30, this.floorPos_y - 250, 60, 200, 20)
-    ellipse(HOPPER_POSITION_X, this.floorPos_y - 235, 60, 350)
-
-    // draw tripod
-    fill(0)
-    triangle(HOPPER_POSITION_X - 30, HOPPER_POSITION_Y - 121, HOPPER_POSITION_X - 65, this.floorPos_y + 10, HOPPER_POSITION_X - 29, HOPPER_POSITION_Y - 70)
-    triangle(HOPPER_POSITION_X + 30, HOPPER_POSITION_Y - 121, HOPPER_POSITION_X + 65, this.floorPos_y + 10, HOPPER_POSITION_X + 29, HOPPER_POSITION_Y - 70)
-    ellipse(HOPPER_POSITION_X - 62, this.floorPos_y + 10, 30, 10)
-    ellipse(HOPPER_POSITION_X + 63, this.floorPos_y + 10, 30, 10)
-
-    // draw part
-    rect(HOPPER_POSITION_X - 30, HOPPER_POSITION_Y - 270, 60, 30)
-
-    // draw Ukrainian flag
-    push();
-    stroke(0)
-    fill(0, 88, 181)
-    rect(HOPPER_POSITION_X - 15, HOPPER_POSITION_Y - 200, 30, 10)
-    fill(247, 206, 0)
-    rect(HOPPER_POSITION_X - 15, HOPPER_POSITION_Y - 190, 30, 10)
-    pop();
   }
 }

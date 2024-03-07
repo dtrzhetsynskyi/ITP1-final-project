@@ -3,13 +3,14 @@ const BRANCH_ROTATION_DEGREES = 30;
 const BRANCH_SHRINK = 0.67;
 
 class RecursiveTree {
-  x = 0;
-  y = 0;
   branches = [];
+  graphicsLayer;
 
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
+  constructor(graphicsLayer) {
+    this.graphicsLayer = graphicsLayer;
+
+    const x = graphicsLayer.width / 2;
+    const y = graphicsLayer.height / 2;
 
     const startVector = createVector(x, y);
     const endVector = createVector(x, y - 100);
@@ -24,7 +25,7 @@ class RecursiveTree {
 
   render() {
     for (let i = 0; i < this.branches.length; i++) {
-      this.branches[i].render();
+      this.branches[i].renderTo(this.graphicsLayer);
     }
   };
 }
@@ -38,13 +39,13 @@ class Branch {
     this.endVector = endVector;
   }
 
-  render() {
+  renderTo(graphicsLayer) {
     push();
-    stroke(228, 12, 235)
-    strokeWeight(3)
-    drawingContext.shadowBlur = 32;
-    drawingContext.shadowColor = color(228, 12, 235);
-    line(this.startVector.x, this.startVector.y, this.endVector.x, this.endVector.y);
+    graphicsLayer.stroke(228, 12, 235)
+    graphicsLayer.strokeWeight(3)
+    graphicsLayer.drawingContext.shadowBlur = 32;
+    graphicsLayer.drawingContext.shadowColor = color(228, 12, 235);
+    graphicsLayer.line(this.startVector.x, this.startVector.y, this.endVector.x, this.endVector.y);
     pop();
   }
 
