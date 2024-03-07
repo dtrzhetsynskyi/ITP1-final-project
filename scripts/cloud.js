@@ -1,22 +1,31 @@
-class Cloud {
-  renderTo(graphicsLayer) {
-    let d = pixelDensity();
-    let inc = 0.003;
-    let yoff = 0;
-    graphicsLayer.loadPixels();
-    for (let y = 0; y < graphicsLayer.height * d; y++) {
-      let xoff = 0;
-      for (let x = 0; x < graphicsLayer.width * d; x++) {
-        const index = (x + y * graphicsLayer.width * d) * 4;
-        const r = noise(xoff, yoff) * 255;
-        graphicsLayer.pixels[index + 0] = r;
-        graphicsLayer.pixels[index + 1] = r;
-        graphicsLayer.pixels[index + 2] = r;
-        graphicsLayer.pixels[index + 3] = r;
+// Draw cloud using 2d Perlin noise algorithm.
+// Algorithm Reference: https://en.wikipedia.org/wiki/Perlin_noise
 
-        xoff += inc;
+const OFFSET_INCREMENT = 0.003;
+
+class Cloud {
+  // Render cloud to the graphics layer
+  renderTo(graphicsLayer) {
+    let density = pixelDensity();
+    let yoff = 0;
+
+    graphicsLayer.loadPixels();
+    for (let y = 0; y < graphicsLayer.height * density; y++) {
+      let xoff = 0;
+
+      for (let x = 0; x < graphicsLayer.width * density; x++) {
+        const id = (x + y * graphicsLayer.width * density) * 4;
+        const r = noise(xoff, yoff) * 255;
+
+        graphicsLayer.pixels[id + 0] = r;
+        graphicsLayer.pixels[id + 1] = r;
+        graphicsLayer.pixels[id + 2] = r;
+        graphicsLayer.pixels[id + 3] = r;
+
+        xoff += OFFSET_INCREMENT;
       }
-      yoff += inc;
+
+      yoff += OFFSET_INCREMENT;
     }
     graphicsLayer.updatePixels();
   }

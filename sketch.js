@@ -8,14 +8,7 @@ The Final Game Project
 const SPACE_KEY = 32;
 
 let cameraPosX = 0;
-
 let floorPos_y;
-
-let canyons;
-let clouds;
-let mountains;
-let collectables;
-let flagpole;
 
 let game_score;
 let lives;
@@ -26,8 +19,12 @@ let backgroundMountains;
 let recursiveTrees = [];
 let rocket;
 let cloud;
-let cloudGraphicsLayer;
+let flagpole;
+let collectables;
+let canyons;
+let mountains;
 
+let cloudGraphics;
 let parallaxStarsGraphics;
 let parallaxMountainsGraphics;
 let recursiveTreeGraphics;
@@ -45,7 +42,7 @@ function setup() {
 	parallaxStarsGraphics = createGraphics(1024, 150);
 	parallaxMountainsGraphics = createGraphics(3000, 350);
 	recursiveTreeGraphics = createGraphics(300, 560);
-	cloudGraphicsLayer = createGraphics(3000, floorPos_y);
+	cloudGraphics = createGraphics(3000, floorPos_y);
 
 	cloud = new Cloud();
 	stars = new Stars();
@@ -54,19 +51,16 @@ function setup() {
 	mountains = [new Mountain(200, floorPos_y, 200, 200)];
 	rocket = new Rocket(250, floorPos_y);
 	const recursiveTree = new RecursiveTree(recursiveTreeGraphics);
+	canyons = [new Canyon(800, floorPos_y, 100, height - floorPos_y)]
+
 	recursiveTrees = [{ x: width / 2 + 100, y: floorPos_y }];
-	canyons = [new Canyon(800, floorPos_y, 300, height - floorPos_y)]
+	flagpole = new Flagpole(1200, floorPos_y);
+	collectables = [{ x_pos: 255, y_pos: 350, size: 35, isFound: false }, { x_pos: 800, y_pos: 390, size: 35, isFound: false }, { x_pos: 1000, y_pos: 390, size: 35, isFound: false }, { x_pos: -800, y_pos: 390, size: 35, isFound: false }]
 
 	stars.renderTo(parallaxStarsGraphics);
 	backgroundMountains.renderTo(parallaxMountainsGraphics);
 	recursiveTree.render();
-	cloud.renderTo(cloudGraphicsLayer);
-
-	// let mask = createGraphics(200, 100);
-	// mask.ellipse(0, 0, 200, 100);
-
-	// cloudGraphicsLayer = cloudGraphicsLayer.get();
-	// cloudGraphicsLayer.mask(mask)
+	cloud.renderTo(cloudGraphics);
 
 	startGame();
 }
@@ -76,11 +70,12 @@ function draw() {
 	push();
 
 	scenery.drawStatic();
+
 	push()
 	translate(cloudOffset, 0)
-	image(cloudGraphicsLayer, -1000, 0)
-	pop()
+	image(cloudGraphics, -cloudGraphics.width / 2, 0)
 	cloudOffset += 0.1;
+	pop()
 
 	push();
 	translate(-character.x * 0.05, 0)
@@ -121,12 +116,12 @@ function draw() {
 	// 	drawCollectable(collectables[i]);
 	// }
 
+	// draw flagpole
+	flagpole.draw();
+
 	// draw the game character
 	character.move();
 	character.draw();
-
-	// draw flagpole
-	renderFlagpole();
 
 	pop()
 
@@ -148,13 +143,13 @@ function draw() {
 	checkPlayerDie();
 
 	// find collectible if the character is close to it
-	for (let i = 0; i < collectables.length; i++) {
-		checkCollectable(collectables[i]);
-	}
-
-	// if (!flagpole.isReached) {
-	// 	checkFlagpole();
+	// for (let i = 0; i < collectables.length; i++) {
+	// 	checkCollectable(collectables[i]);
 	// }
+
+	if (!flagpole.isReached) {
+		checkFlagpole();
+	}
 
 	// if (lives < 1) {
 	// 	fill(136, 8, 8)
@@ -256,25 +251,8 @@ function drawCollectable(t_collectable) {
 	}
 }
 
-function renderFlagpole() {
-	push();
-	strokeWeight(5);
-	stroke(180);
-	line(flagpole.x_pos, floorPos_y, flagpole.x_pos, floorPos_y - 250);
-
-	fill(255, 0, 255);
-	noStroke();
-
-	if (flagpole.isReached) {
-		rect(flagpole.x_pos, floorPos_y - 250, 50, 50);
-	} else {
-		rect(flagpole.x_pos, floorPos_y - 50, 50, 50);
-	}
-	pop();
-}
-
 function checkFlagpole() {
-	var distance = abs(character.x - flagpole.x_pos);
+	var distance = abs(character.x - flagpole.x);
 	if (distance < 15) {
 		flagpole.isReached = true;
 	}
@@ -294,9 +272,8 @@ function startGame() {
 	character = new Character(width / 2, floorPos_y);
 
 	// initialize scenery
-	collectables = [{ x_pos: 255, y_pos: 350, size: 35, isFound: false }, { x_pos: 800, y_pos: 390, size: 35, isFound: false }, { x_pos: 1000, y_pos: 390, size: 35, isFound: false }, { x_pos: -800, y_pos: 390, size: 35, isFound: false }]
-	clouds = [{ x_pos: -200, y_pos: 200 }, { x_pos: 200, y_pos: 100 }, { x_pos: 500, y_pos: 100 }, { x_pos: 800, y_pos: 100 }, { x_pos: 1000, y_pos: 100 }, { x_pos: 1200, y_pos: 100 }]
-	flagpole = { isReached: false, x_pos: 1200 }
+
+	flagpole.isReach = false;
 
 	game_score = 0;
 }
