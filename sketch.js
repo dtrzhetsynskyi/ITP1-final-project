@@ -23,6 +23,7 @@ let flagpole;
 let collectables;
 let canyons;
 let mountains;
+let platforms;
 
 let cloudGraphics;
 let parallaxStarsGraphics;
@@ -31,37 +32,43 @@ let recursiveTreeGraphics;
 
 let cloudOffset = 0;
 
-// function to initialize variables and environment
+// Function to initialize variables and environment
 function setup() {
 	createCanvas(1024, 576);
 	angleMode(DEGREES);
 
+	// Initialize main game variables
 	floorPos_y = height * 3 / 4;
 	lives = 3;
 
+	// Initalize graphics layers
 	parallaxStarsGraphics = createGraphics(1024, 150);
 	parallaxMountainsGraphics = createGraphics(3000, 350);
 	recursiveTreeGraphics = createGraphics(300, 560);
 	cloudGraphics = createGraphics(3000, floorPos_y);
 
+	// Initialize game objects
 	cloud = new Cloud();
 	stars = new Stars();
 	backgroundMountains = new BackgroundMountains();
 	scenery = new Scenery(floorPos_y);
 	mountains = [new Mountain(200, floorPos_y, 200, 200)];
 	rocket = new Rocket(250, floorPos_y);
-	const recursiveTree = new RecursiveTree(recursiveTreeGraphics);
-	canyons = [new Canyon(800, floorPos_y, 100, height - floorPos_y)]
-
-	recursiveTrees = [{ x: width / 2 + 100, y: floorPos_y }];
+	canyons = [new Canyon(800, floorPos_y, 300, height - floorPos_y)]
 	flagpole = new Flagpole(1200, floorPos_y);
-	collectables = [{ x_pos: 255, y_pos: 350, size: 35, isFound: false }, { x_pos: 800, y_pos: 390, size: 35, isFound: false }, { x_pos: 1000, y_pos: 390, size: 35, isFound: false }, { x_pos: -800, y_pos: 390, size: 35, isFound: false }]
 
+	// Initialize repeateble game objects
+	platforms = [new Platform(950, floorPos_y - 70, 50)]
+	recursiveTrees = [{ x: width / 2 + 100, y: floorPos_y }];
+	collectables = [{ x_pos: 255, y_pos: 350, size: 35, isFound: false }, { x_pos: 800, y_pos: 390, size: 35, isFound: false }];
+
+	// Render game objects to graphic layers
 	stars.renderTo(parallaxStarsGraphics);
 	backgroundMountains.renderTo(parallaxMountainsGraphics);
-	recursiveTree.render();
+	new RecursiveTree(recursiveTreeGraphics).render();
 	cloud.renderTo(cloudGraphics);
 
+	// Start the game
 	startGame();
 }
 
@@ -104,6 +111,12 @@ function draw() {
 	// for (let i = 0; i < mountains.length; i++) {
 	// 	mountains[i].draw();
 	// }
+
+	// draw the platforms
+	for (let i = 0; i < platforms.length; i++) {
+		platforms[i].move();
+		platforms[i].draw();
+	}
 
 	// draw the canyon
 	for (let i = 0; i < canyons.length; i++) {
@@ -210,6 +223,17 @@ function controlCharacterFall() {
 	} else if (character.isFalling && character.y === floorPos_y) {
 		character.jumpHeight = 0;
 		character.isFalling = false;
+	}
+
+	for (let i = 0; i < platforms.length; i++) {
+		const platform = platforms[i];
+
+		if (character.isFalling && character.y === platform.y && abs(character.x - platform.x) <= 70) {
+			character.jumpHeight = 0;
+			character.isFalling = false;
+		} else if (character.y === platform.y && abs(character.x - platform.x) > 70) {
+			character.isFalling = true;
+		}
 	}
 }
 
