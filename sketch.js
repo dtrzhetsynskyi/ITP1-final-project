@@ -14,6 +14,7 @@ let game_score;
 let lives;
 
 let character;
+let blaster;
 let scenery;
 let backgroundMountains;
 let recursiveTrees = [];
@@ -45,7 +46,7 @@ function setup() {
 	parallaxStarsGraphics = createGraphics(1024, 150);
 	parallaxMountainsGraphics = createGraphics(3000, 350);
 	recursiveTreeGraphics = createGraphics(300, 560);
-	cloudGraphics = createGraphics(3000, floorPos_y);
+	cloudGraphics = createGraphics(3400, floorPos_y);
 
 	// Initialize game objects
 	cloud = new Cloud();
@@ -56,6 +57,7 @@ function setup() {
 	rocket = new Rocket(250, floorPos_y);
 	canyons = [new Canyon(800, floorPos_y, 300, height - floorPos_y)]
 	flagpole = new Flagpole(1200, floorPos_y);
+	blaster = new Blaster(width / 2 + 200, floorPos_y - 50);
 
 	// Initialize repeateble game objects
 	platforms = [new Platform(950, floorPos_y - 70, 50)]
@@ -80,8 +82,8 @@ function draw() {
 
 	push()
 	translate(cloudOffset, 0)
-	image(cloudGraphics, -cloudGraphics.width / 2, 0)
-	cloudOffset += 0.1;
+	image(cloudGraphics, -2000, 0)
+	cloudOffset += 0.08;
 	pop()
 
 	push();
@@ -136,6 +138,13 @@ function draw() {
 	character.move();
 	character.draw();
 
+	if (blaster.isFound) {
+		blaster.x = character.x + 20;
+		blaster.y = character.y - 40;
+	}
+	blaster.move();
+	blaster.draw();
+
 	pop()
 
 	let fps = parseInt(frameRate());
@@ -159,6 +168,8 @@ function draw() {
 	// for (let i = 0; i < collectables.length; i++) {
 	// 	checkCollectable(collectables[i]);
 	// }
+
+	checkBlaster();
 
 	if (!flagpole.isReached) {
 		checkFlagpole();
@@ -203,6 +214,8 @@ function keyPressed() {
 		character.isShift = true;
 	} else if (keyCode === SPACE_KEY && !character.isFalling) {
 		character.isJumping = true;
+	} else if (key === "e" && blaster.isFound) {
+		blaster.shoot();
 	}
 	// -------------- end customization for running using shift
 }
@@ -228,10 +241,10 @@ function controlCharacterFall() {
 	for (let i = 0; i < platforms.length; i++) {
 		const platform = platforms[i];
 
-		if (character.isFalling && character.y === platform.y && abs(character.x - platform.x) <= 70) {
+		if (character.isFalling && character.y === platform.y && abs(character.x - platform.x) <= 60) {
 			character.jumpHeight = 0;
 			character.isFalling = false;
-		} else if (character.y === platform.y && abs(character.x - platform.x) > 70) {
+		} else if (character.y === platform.y && abs(character.x - platform.x) > 60) {
 			character.isFalling = true;
 		}
 	}
@@ -260,6 +273,12 @@ function checkCollectable(t_collectable) {
 	if (dist(character.x, character.y, t_collectable.x_pos, t_collectable.y_pos) <= 45 && t_collectable.isFound == false) {
 		t_collectable.isFound = true;
 		game_score++;
+	}
+}
+
+function checkBlaster() {
+	if (dist(character.x, character.y, blaster.x, blaster.y) <= 45 && blaster.isFound == false) {
+		blaster.isFound = true;
 	}
 }
 

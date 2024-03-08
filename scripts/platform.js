@@ -1,3 +1,5 @@
+const PLATFORM_MOVEMENT_INCREMENT = 0.5;
+
 class Platform {
   x = 0;
   y = 0;
@@ -24,10 +26,10 @@ class Platform {
   move() {
     if (this.moveDistance === 0) return;
 
-    this.x += this.moveDirection;
-    this.currentMoveDistance += this.moveDirection;
+    this.x += PLATFORM_MOVEMENT_INCREMENT * this.moveDirection;
+    this.currentMoveDistance += PLATFORM_MOVEMENT_INCREMENT * this.moveDirection;
 
-    if (abs(this.currentMoveDistance) === this.moveDistance) {
+    if (abs(this.currentMoveDistance) >= this.moveDistance) {
       this.moveDirection *= -1;
     }
   }

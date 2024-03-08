@@ -34,7 +34,7 @@ class Character {
     if (this.isPlummeting) {
       this.updatePosition(this.x, this.y + 3)
     } else if (this.isFalling) {
-      this.updatePosition(this.x, this.y + 1);
+      this.updatePosition(this.x, this.y + 2);
     } else if (this.isJumping) {
       this.updatePosition(this.x, this.y - 5)
       this.jumpHeight += 5;
