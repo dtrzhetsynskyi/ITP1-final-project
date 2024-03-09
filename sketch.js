@@ -25,6 +25,7 @@ let collectables;
 let canyons;
 let mountains;
 let platforms;
+let enemies = [];
 
 let cloudGraphics;
 let parallaxStarsGraphics;
@@ -160,6 +161,17 @@ function draw() {
 	}
 	blaster.move();
 	blaster.draw();
+
+	enemies.map(enemy => {
+		if (blaster.bullet && abs(blaster.bullet.x - enemy.x) <= 5) {
+			enemy.isEliminated = true;
+			blaster.bullet = null;
+		}
+		if (!enemy.isEliminated) {
+			enemy.move();
+			enemy.render();
+		}
+	});
 
 	pop()
 
@@ -335,6 +347,7 @@ function startGame() {
 
 	flagpole.isReach = false;
 	blaster = new Blaster(width / 2 + 200, character.y - 40);
+	enemies = [new Enemy(300, floorPos_y, 70)];
 
 	game_score = 0;
 }

@@ -1,4 +1,4 @@
-const BLASTER_MOVEMENT_INCREMENT = 0.3;
+const BLASTER_MOVEMENT_INCREMENT = 0.5;
 
 const BLASTER_DIRECTIONS = {
   right: "RIGHT",
@@ -81,7 +81,6 @@ class Blaster {
 
       if (abs(this.moveHeight) >= 10) {
         this.moveDirection *= -1;
-        this.shoot();
       }
     } else if (this.isFound && this.blasterDirection === BLASTER_DIRECTIONS.fallingDown && this.y < height + 10) {
       this.y += 2;

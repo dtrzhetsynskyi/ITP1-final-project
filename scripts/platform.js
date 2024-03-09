@@ -26,8 +26,8 @@ class Platform {
   move() {
     if (this.moveDistance === 0) return;
 
-    this.x += PLATFORM_MOVEMENT_INCREMENT * this.moveDirection;
     this.currentMoveDistance += PLATFORM_MOVEMENT_INCREMENT * this.moveDirection;
+    this.x += PLATFORM_MOVEMENT_INCREMENT * this.moveDirection;
 
     if (abs(this.currentMoveDistance) >= this.moveDistance) {
       this.moveDirection *= -1;

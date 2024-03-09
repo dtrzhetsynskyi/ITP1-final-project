@@ -40,10 +40,10 @@ class Branch {
 
   renderTo(graphicsLayer) {
     push();
-    graphicsLayer.stroke(228, 12, 235)
+    graphicsLayer.stroke(16, 246, 77)
     graphicsLayer.strokeWeight(3)
     graphicsLayer.drawingContext.shadowBlur = 32;
-    graphicsLayer.drawingContext.shadowColor = color(228, 12, 235);
+    graphicsLayer.drawingContext.shadowColor = color(16, 246, 77);
     graphicsLayer.line(this.startVector.x, this.startVector.y, this.endVector.x, this.endVector.y);
     pop();
   }
