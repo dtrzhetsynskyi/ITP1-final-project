@@ -57,7 +57,6 @@ function setup() {
 	rocket = new Rocket(250, floorPos_y);
 	canyons = [new Canyon(800, floorPos_y, 300, height - floorPos_y)]
 	flagpole = new Flagpole(1200, floorPos_y);
-	blaster = new Blaster(width / 2 + 200, floorPos_y - 50);
 
 	// Initialize repeateble game objects
 	platforms = [new Platform(950, floorPos_y - 70, 50)]
@@ -139,8 +138,25 @@ function draw() {
 	character.draw();
 
 	if (blaster.isFound) {
-		blaster.x = character.x + 20;
-		blaster.y = character.y - 40;
+		if (character.isLeft) {
+			blaster.x = character.x - 25;
+			blaster.y = character.y - 35;
+			blaster.blasterDirection = BLASTER_DIRECTIONS.left;
+		} else if (character.isRight) {
+			blaster.x = character.x + 27;
+			blaster.y = character.y - 35;
+			blaster.blasterDirection = BLASTER_DIRECTIONS.right;
+		} else if (!character.isRight && !character.isLeft && !character.isFalling && !character.isPlummeting) {
+			blaster.x = character.x + 17;
+			blaster.y = character.y - 26;
+			blaster.blasterDirection = BLASTER_DIRECTIONS.down;
+		} else if (!character.isRight && !character.isLeft && character.isFalling && !character.isPlummeting) {
+			blaster.x = character.x + 24;
+			blaster.y = character.y - 30;
+			blaster.blasterDirection = BLASTER_DIRECTIONS.down;
+		} else if (character.isPlummeting) {
+			blaster.blasterDirection = BLASTER_DIRECTIONS.fallingDown;
+		}
 	}
 	blaster.move();
 	blaster.draw();
@@ -277,8 +293,9 @@ function checkCollectable(t_collectable) {
 }
 
 function checkBlaster() {
-	if (dist(character.x, character.y, blaster.x, blaster.y) <= 45 && blaster.isFound == false) {
+	if (!blaster.isFound && abs(character.x - blaster.x) <= 20 && blaster.isFound == false) {
 		blaster.isFound = true;
+		character.hasFoundBlaster = true;
 	}
 }
 
@@ -317,6 +334,7 @@ function startGame() {
 	// initialize scenery
 
 	flagpole.isReach = false;
+	blaster = new Blaster(width / 2 + 200, character.y - 40);
 
 	game_score = 0;
 }

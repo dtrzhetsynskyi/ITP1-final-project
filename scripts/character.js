@@ -12,6 +12,7 @@ class Character {
   isFalling = false;
   isPlummeting = false;
   isShift = false;
+  hasFoundBlaster = false;
 
   armRotationAngle = 0;
 
@@ -53,10 +54,14 @@ class Character {
       this.drawFallingTo("left")
     } else if (this.isRight && this.isFalling) {
       this.drawFallingTo("right");
-    } else if (this.isLeft) {
+    } else if (!this.hasFoundBlaster && this.isLeft) {
       this.drawWalkingTo("left")
-    } else if (this.isRight) {
+    } else if (!this.hasFoundBlaster && this.isRight) {
       this.drawWalkingTo("right")
+    } else if (this.hasFoundBlaster && this.isLeft) {
+      this.drawWalkingWithBlasterTo("left")
+    } else if (this.hasFoundBlaster && this.isRight) {
+      this.drawWalkingWithBlasterTo("right")
     } else if (this.isFalling) {
       this.drawFalling();
     } else if (this.isPlummeting) {
@@ -231,6 +236,114 @@ class Character {
       translate(this.x + 13, this.y - 37)
       rotate(-30)
       ellipse(0, 0, 7, 30)
+      pop()
+
+      // Body and legs
+      push()
+      translate(this.x - 1, this.y - 29)
+      rotate(-20)
+      rect(0, 0, 8, 33, 5)
+      pop()
+
+      rect(this.x - 5, this.y - 49, 15, 30, 5)
+
+      push()
+      translate(this.x - 2, this.y - 31)
+      rotate(20)
+      rect(0, 0, 8, 33, 5)
+      pop()
+
+      // Backpack
+      fill(255)
+      stroke(0)
+      rect(this.x - 12, this.y - 87, 0.1, 50)
+      rect(this.x - 15, this.y - 50, 10, 30, 5);
+
+      // Helmet
+      fill(255)
+      stroke(0)
+      ellipse(this.x + 2, this.y - 60, 25, 25);
+      fill(0)
+      ellipse(this.x + 7, this.y - 60, 15, 15);
+
+      // Sun reflection on helmet
+      fill(255)
+      noStroke()
+      push()
+      translate(this.x + 5, this.y - 62)
+      rotate(30)
+      ellipse(0, 0, 3, 5)
+      pop()
+    }
+  }
+
+  drawWalkingWithBlasterTo(direction) {
+    if (direction === "left") {
+      // Left arm
+      noStroke()
+      fill(244, 60, 31)
+      push()
+      translate(this.x - 8, this.y - 42)
+      rotate(60)
+      ellipse(0, 0, 7, 20)
+      pop()
+
+      push()
+      translate(this.x - 16, this.y - 40)
+      rotate(85)
+      ellipse(0, 0, 7, 15)
+      pop()
+
+      // Body and legs
+      push()
+      translate(this.x - 1, this.y - 29)
+      rotate(-20)
+      rect(0, 0, 8, 33, 5)
+      pop()
+
+      rect(this.x - 5, this.y - 49, 15, 30, 5)
+
+      push()
+      translate(this.x - 2, this.y - 31)
+      rotate(20)
+      rect(0, 0, 8, 33, 5)
+      pop()
+
+      // Backpack
+      fill(255)
+      stroke(0)
+      rect(this.x + 17, this.y - 87, 0.1, 50)
+      rect(this.x + 10, this.y - 50, 10, 30, 5);
+
+      // Helmet
+      fill(255)
+      stroke(0)
+      ellipse(this.x + 2, this.y - 60, 25, 25);
+      fill(0)
+      ellipse(this.x - 3, this.y - 60, 15, 15);
+
+      // Sun reflection on helmet
+      fill(255)
+      noStroke()
+      push()
+      translate(this.x, this.y - 62)
+      rotate(150)
+      ellipse(0, 0, 3, 5)
+      pop()
+    } else if (direction === "right") {
+      noStroke()
+      fill(244, 60, 31)
+      // Right arm
+      push()
+      translate(this.x + 13, this.y - 42)
+      rotate(-60)
+      ellipse(0, 0, 7, 20)
+      pop()
+
+      push()
+      translate(this.x + 20, this.y - 39)
+      rotate(-85)
+      ellipse(0, 0, 7, 15)
       pop()
 
       // Body and legs
