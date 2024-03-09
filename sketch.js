@@ -175,9 +175,22 @@ function draw() {
 
 	pop()
 
+	push();
+	stroke(220);
+	fill(120, 120, 120, 180)
+	rect(10, 10, 130, 110, 10);
+
+	fill(255)
+	textFont('Courier New', 20);
+
 	let fps = parseInt(frameRate());
-	textSize(20)
-	text(fps, 50, 50);
+	text(`FPS ${fps}`, 30, 40);
+
+	text(`SCORE ${game_score}`, 30, 70);
+	text(`LIVES ${lives}`, 30, 100);
+
+	pop();
+
 
 	//A helpful mouse pointer
 	push();
@@ -234,15 +247,15 @@ function keyPressed() {
 	// -------------- start customization for running using shift
 	if (character.isPlummeting) return; // disable input handling when plummeting 
 
-	if (keyCode === LEFT_ARROW && character.x > rocket.x + 130) {
+	if (key === "a" && character.x > rocket.x + 130) {
 		character.isLeft = true;
-	} else if (keyCode === RIGHT_ARROW) {
+	} else if (key === "d") {
 		character.isRight = true;
 	} else if (keyCode === SHIFT) {
 		character.isShift = true;
 	} else if (keyCode === SPACE_KEY && !character.isFalling) {
 		character.isJumping = true;
-	} else if (key === "e" && blaster.isFound) {
+	} else if (key === "w" && blaster.isFound) {
 		blaster.shoot();
 	}
 	// -------------- end customization for running using shift
@@ -250,9 +263,9 @@ function keyPressed() {
 
 // function to handle key release
 function keyReleased() {
-	if (keyCode === LEFT_ARROW) {
+	if (key === "a") {
 		character.isLeft = false;
-	} else if (keyCode === RIGHT_ARROW) {
+	} else if (key === "d") {
 		character.isRight = false;
 	}
 }
@@ -338,6 +351,16 @@ function checkPlayerDie() {
 			startGame();
 		}
 	}
+
+	enemies.map(enemy => {
+		if (dist(enemy.x, enemy.y, character.x, character.y) <= 30) {
+			lives -= 1;
+
+			if (lives > 0) {
+				startGame();
+			}
+		}
+	})
 }
 
 function startGame() {

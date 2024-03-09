@@ -18,8 +18,7 @@ class Platform {
     push();
     fill(215, 148, 94);
     rect(this.x - 50, this.y, 100, 20, 10);
-    fill(0)
-    ellipse(this.x, this.y, 5, 5);
+    fill(0);
     pop();
   }
 
