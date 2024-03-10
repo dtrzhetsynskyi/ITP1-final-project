@@ -33,6 +33,32 @@ let recursiveTreeGraphics;
 
 let cloudOffset = 0;
 
+let jumpSound;
+let blasterSound;
+let collectableSound;
+let backgroundMusic;
+let plummetSound;
+let enemyDieSound;
+
+function preload() {
+	soundFormats('mp3', 'wav');
+
+	blasterSound = loadSound('assets/blaster.wav');
+
+	collectableSound = loadSound('assets/collectable.wav');
+	collectableSound.setVolume(0.5);
+
+	jumpSound = loadSound('assets/jump.wav');
+
+	plummetSound = loadSound('assets/plummet1.wav');
+	plummetSound.setVolume(0.5);
+
+	enemyDieSound = loadSound('assets/enemy-die.wav');
+
+	backgroundMusic = loadSound('assets/background-music.mp3');
+	backgroundMusic.setVolume(0.1);
+}
+
 // Function to initialize variables and environment
 function setup() {
 	createCanvas(1024, 576);
@@ -89,12 +115,15 @@ function setup() {
 	new RecursiveTree(recursiveTreeGraphics).render();
 	cloud.renderTo(cloudGraphics);
 
+	backgroundMusic.loop();
+
 	// Start the game
 	startGame();
 }
 
 function startGame() {
 	character = new Character(width / 2, floorPos_y);
+	gameScore = 0;
 
 	// Initialize pickable and killable objects
 	blaster = new Blaster(1400, character.y - 40);
@@ -171,6 +200,7 @@ function draw() {
 		if (!collectable.isFound) {
 			if (dist(character.x, character.y, collectable.x, collectable.y) <= 50) {
 				collectable.isFound = true;
+				collectableSound.play();
 				gameScore += 100;
 			}
 			collectable.move();
@@ -187,9 +217,10 @@ function draw() {
 
 	enemies.map(enemy => {
 		if (!enemy.isEliminated) {
-			if (blaster.bullet && dist(blaster.bullet.x, blaster.bullet.y, enemy.x, enemy.y) <= 60) {
+			if (blaster.bullet && dist(blaster.bullet.x, blaster.bullet.y, enemy.x, enemy.y) <= 80) {
 				enemy.isEliminated = true;
 				blaster.bullet = null;
+				enemyDieSound.play();
 				gameScore += 50;
 			}
 
@@ -254,11 +285,6 @@ function draw() {
 	restrictCharacterMovement();
 	checkPlayerDie();
 
-	// find collectible if the character is close to it
-	for (let i = 0; i < collectables.length; i++) {
-		checkCollectable(collectables[i]);
-	}
-
 	checkBlaster();
 
 	if (!flagpole.isReached) {
@@ -276,8 +302,10 @@ function keyPressed() {
 		character.isRight = true;
 	} else if (keyCode === SPACE_KEY && !character.isFalling) {
 		character.isJumping = true;
-	} else if (key === "w" && blaster.isFound) {
+		jumpSound.play();
+	} else if (key === "w" && blaster.isFound && !blaster.bullet && blaster.blasterDirection !== BLASTER_DIRECTIONS.down) {
 		blaster.shoot();
+		blasterSound.play();
 	}
 }
 
@@ -330,13 +358,6 @@ function updateCameraPosition() {
 	translate(-cameraPosX, 0)
 }
 
-function checkCollectable(t_collectable) {
-	if (dist(character.x, character.y, t_collectable.x_pos, t_collectable.y_pos) <= 45 && !t_collectable.isFound) {
-		t_collectable.isFound = true;
-		gameScore++;
-	}
-}
-
 function checkBlaster() {
 	if (!blaster.isFound && dist(character.x, character.y, blaster.x, blaster.y) <= 50) {
 		blaster.isFound = true;
@@ -354,6 +375,8 @@ function checkFlagpole() {
 function checkPlayerDie() {
 	if (character.y > height + 100) {
 		lives -= 1;
+
+		plummetSound.play();
 
 		if (lives > 0) {
 			startGame();
