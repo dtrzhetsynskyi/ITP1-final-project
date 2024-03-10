@@ -10,7 +10,7 @@ const SPACE_KEY = 32;
 let cameraPosX = 0;
 let floorPos_y;
 
-let game_score;
+let gameScore;
 let lives;
 
 let character;
@@ -23,7 +23,6 @@ let cloud;
 let flagpole;
 let collectables;
 let canyons;
-let mountains;
 let platforms;
 let enemies = [];
 
@@ -42,7 +41,7 @@ function setup() {
 	// Initialize main game variables
 	floorPos_y = height * 3 / 4;
 	lives = 3;
-	game_score = 0;
+	gameScore = 0;
 
 	// Initalize graphics layers
 	parallaxStarsGraphics = createGraphics(1024, 150);
@@ -83,7 +82,6 @@ function setup() {
 		new Canyon(2000, floorPos_y, 400, height - floorPos_y),
 		new Canyon(2800, floorPos_y, 1400, height - floorPos_y)
 	];
-	mountains = [new Mountain(200, floorPos_y, 200, 200)];
 
 	// Render game objects to graphic layers
 	stars.renderTo(parallaxStarsGraphics);
@@ -93,6 +91,31 @@ function setup() {
 
 	// Start the game
 	startGame();
+}
+
+function startGame() {
+	character = new Character(width / 2, floorPos_y);
+
+	// Initialize pickable and killable objects
+	blaster = new Blaster(1400, character.y - 40);
+	enemies = [
+		new Enemy(1300, floorPos_y, 250, -1),
+		new Enemy(1900, floorPos_y, 100, 1),
+		new Enemy(2200, floorPos_y - 70, 90, -1),
+		new Enemy(3500, floorPos_y - 210, 100, 1),
+		new Enemy(4400, floorPos_y, 100, 1),
+	];
+	collectables = [
+		new Collectable(930, floorPos_y - 200, 25),
+		new Collectable(1140, floorPos_y - 180, 25),
+		new Collectable(1700, floorPos_y - 100, 25),
+		new Collectable(2200, floorPos_y - 200, 25),
+		new Collectable(2600, floorPos_y - 120, 25),
+		new Collectable(3000, floorPos_y - 120, 25),
+		new Collectable(3200, floorPos_y - 180, 25),
+		new Collectable(3800, floorPos_y - 270, 25),
+		new Collectable(4000, floorPos_y - 220, 25),
+	];
 }
 
 // function to draw the scenery and character
@@ -130,11 +153,6 @@ function draw() {
 
 	rocket.render();
 
-	// draw the mountains
-	// for (let i = 0; i < mountains.length; i++) {
-	// 	mountains[i].draw();
-	// }
-
 	// draw the platforms
 	for (let i = 0; i < platforms.length; i++) {
 		platforms[i].move();
@@ -148,9 +166,17 @@ function draw() {
 	}
 
 	// draw collectable
-	// for (let i = 0; i < collectables.length; i++) {
-	// 	drawCollectable(collectables[i]);
-	// }
+	for (let i = 0; i < collectables.length; i++) {
+		const collectable = collectables[i];
+		if (!collectable.isFound) {
+			if (dist(character.x, character.y, collectable.x, collectable.y) <= 50) {
+				collectable.isFound = true;
+				gameScore += 100;
+			}
+			collectable.move();
+			collectable.draw();
+		}
+	}
 
 	// draw flagpole
 	flagpole.draw();
@@ -161,9 +187,10 @@ function draw() {
 
 	enemies.map(enemy => {
 		if (!enemy.isEliminated) {
-			if (blaster.bullet && abs(blaster.bullet.x - enemy.x) <= 10) {
+			if (blaster.bullet && dist(blaster.bullet.x, blaster.bullet.y, enemy.x, enemy.y) <= 60) {
 				enemy.isEliminated = true;
 				blaster.bullet = null;
+				gameScore += 50;
 			}
 
 			enemy.move();
@@ -200,16 +227,16 @@ function draw() {
 	push();
 	stroke(220);
 	fill(120, 120, 120, 180)
-	rect(10, 10, 125, 110, 10);
+	rect(10, 10, 150, 80, 10);
 
 	fill(255)
 	textFont('Courier New', 20);
 
 	let fps = parseInt(frameRate());
-	text(`FPS ${fps}`, 30, 40);
+	text(`FPS ${fps}`, width - 100, floorPos_y + 100);
 
-	text(`SCORE ${game_score}`, 30, 70);
-	text(`LIVES ${lives}`, 30, 100);
+	text(`SCORE ${gameScore}`, 30, 40);
+	text(`LIVES ${lives}`, 30, 70);
 
 	pop();
 
@@ -228,40 +255,15 @@ function draw() {
 	checkPlayerDie();
 
 	// find collectible if the character is close to it
-	// for (let i = 0; i < collectables.length; i++) {
-	// 	checkCollectable(collectables[i]);
-	// }
+	for (let i = 0; i < collectables.length; i++) {
+		checkCollectable(collectables[i]);
+	}
 
 	checkBlaster();
 
 	if (!flagpole.isReached) {
 		checkFlagpole();
 	}
-
-	// if (lives < 1) {
-	// 	fill(136, 8, 8)
-	// 	textStyle(BOLD);
-	// 	textSize(30);
-	// 	push()
-	// 	textAlign(CENTER)
-	// 	text(`Game over. Press space to continue.`, width / 2, height / 2)
-	// 	pop()
-
-	// 	return;
-	// }
-
-	// if (flagpole.isReached) {
-	// 	fill(255, 215, 0)
-
-	// 	push()
-	// 	textStyle(BOLD);
-	// 	textSize(30);
-	// 	textAlign(CENTER)
-	// 	text(`Level complete. Press space to continue.`, width / 2, height / 2)
-	// 	pop()
-
-	// 	return;
-	// }
 }
 
 // function to handle key press
@@ -331,26 +333,14 @@ function updateCameraPosition() {
 function checkCollectable(t_collectable) {
 	if (dist(character.x, character.y, t_collectable.x_pos, t_collectable.y_pos) <= 45 && !t_collectable.isFound) {
 		t_collectable.isFound = true;
-		game_score++;
+		gameScore++;
 	}
 }
 
 function checkBlaster() {
-	if (!blaster.isFound && abs(character.x - blaster.x) <= 50 && abs(character.y - blaster.y) <= 40) {
+	if (!blaster.isFound && dist(character.x, character.y, blaster.x, blaster.y) <= 50) {
 		blaster.isFound = true;
 		character.hasFoundBlaster = true;
-	}
-}
-
-function drawCollectable(t_collectable) {
-	if (t_collectable.isFound === false) {
-		fill(233, 184, 36);
-		ellipse(t_collectable.x_pos, t_collectable.y_pos, t_collectable.size, t_collectable.size);
-		noStroke();
-		fill(238, 147, 34)
-		ellipse(t_collectable.x_pos, t_collectable.y_pos, 0.7 * t_collectable.size, 0.7 * t_collectable.size);
-		fill(255)
-		text("B", t_collectable.x_pos - 6, t_collectable.y_pos + 6);
 	}
 }
 
@@ -382,22 +372,4 @@ function checkPlayerDie() {
 	// 		}
 	// 	}
 	// })
-}
-
-function startGame() {
-	character = new Character(width / 2, floorPos_y);
-
-	// Initialize pickable and killable objects
-	blaster = new Blaster(1400, character.y - 40);
-	enemies = [
-		new Enemy(1300, floorPos_y, 250, -1),
-		new Enemy(1900, floorPos_y, 100, 1),
-		new Enemy(2200, floorPos_y - 70, 90, -1),
-		new Enemy(3500, floorPos_y - 210, 100, 1),
-		new Enemy(4400, floorPos_y, 100, 1),
-	];
-	collectables = [
-		{ x_pos: 255, y_pos: 350, size: 35, isFound: false },
-		{ x_pos: 800, y_pos: 390, size: 35, isFound: false }
-	];
 }
