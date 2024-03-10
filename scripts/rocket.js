@@ -1,7 +1,3 @@
-// Configuration constants
-// const this.x = 250;
-// const this.y = 440;
-
 class Rocket {
   x = 0;
   y = 0;

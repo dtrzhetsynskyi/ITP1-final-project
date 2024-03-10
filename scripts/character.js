@@ -1,4 +1,4 @@
-const JUMP_HEIGHT = 70;
+const JUMP_HEIGHT = 100;
 
 class Character {
   x = 0;
@@ -11,7 +11,6 @@ class Character {
   isRight = false;
   isFalling = false;
   isPlummeting = false;
-  isShift = false;
   hasFoundBlaster = false;
 
   armRotationAngle = 0;

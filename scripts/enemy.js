@@ -7,10 +7,11 @@ class Enemy {
 
   isEliminated = false;
 
-  constructor(x, y, patrolRadius) {
+  constructor(x, y, patrolRadius, moveDirection) {
     this.x = x;
     this.y = y;
     this.patrolRadius = patrolRadius;
+    this.moveDirection = moveDirection;
   }
 
   render() {
@@ -82,6 +83,8 @@ class Enemy {
   }
 
   move() {
+    if (this.patrolRadius === 0) return;
+
     this.currentPatrolRadius += 2 * this.moveDirection;
     this.x += 2 * this.moveDirection;
 
