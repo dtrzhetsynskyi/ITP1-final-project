@@ -51,7 +51,7 @@ class Branch {
     push();
     graphicsLayer.stroke(16, 246, 77)
     graphicsLayer.strokeWeight(3)
-    graphicsLayer.drawingContext.shadowBlur = 32;
+    graphicsLayer.drawingContext.shadowBlur = 10;
     graphicsLayer.drawingContext.shadowColor = color(16, 246, 77);
     graphicsLayer.line(this.startVector.x, this.startVector.y, this.endVector.x, this.endVector.y);
     pop();
