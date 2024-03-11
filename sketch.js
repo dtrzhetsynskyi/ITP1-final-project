@@ -128,6 +128,7 @@ function setup() {
 function startGame() {
 	character = new Character(width / 2, floorPos_y);
 	gameScore = 0;
+	flagpole.isReached = false;
 
 	// Initialize pickable and killable objects
 	blaster = new Blaster(1400, character.y - 40);
@@ -338,9 +339,8 @@ function restrictCharacterMovement() {
 // Function to check player die
 function checkPlayerDie() {
 	if (character.y > height + 100) {
-		plummetSound.play();
-
 		if (lives >= 1) {
+			plummetSound.play();
 			lives -= 1;
 		}
 
