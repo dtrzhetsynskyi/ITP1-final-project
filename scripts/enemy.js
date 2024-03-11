@@ -1,3 +1,9 @@
+/*
+
+Enemy
+
+*/
+
 class Enemy {
   x = 0;
   y = 0;
@@ -14,6 +20,7 @@ class Enemy {
     this.moveDirection = moveDirection;
   }
 
+  // Render enemy
   render() {
     if (this.moveDirection === -1) {
       // Left arm
@@ -82,6 +89,7 @@ class Enemy {
     }
   }
 
+  // Move enemy
   move() {
     if (this.patrolRadius === 0) return;
 

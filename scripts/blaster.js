@@ -1,3 +1,9 @@
+/*
+
+Blaster
+
+*/
+
 const BLASTER_MOVEMENT_INCREMENT = 0.5;
 
 const BLASTER_DIRECTIONS = {
@@ -24,11 +30,13 @@ class Blaster {
     this.y = y;
   }
 
+  // Draw blaster and bullet
   draw() {
     this.drawBlaster();
     this.drawBullet();
   }
 
+  // Draw blaster
   drawBlaster() {
     if (this.blasterDirection === BLASTER_DIRECTIONS.right || this.blasterDirection === BLASTER_DIRECTIONS.fallingDown) {
       noFill();
@@ -61,6 +69,7 @@ class Blaster {
     }
   }
 
+  // Draw bullet
   drawBullet() {
     if (!this.bullet) return;
 
@@ -74,6 +83,7 @@ class Blaster {
     pop();
   }
 
+  // Move blaster and bullet
   move() {
     if (!this.isFound) {
       this.y += BLASTER_MOVEMENT_INCREMENT * this.moveDirection;
@@ -94,6 +104,7 @@ class Blaster {
     }
   };
 
+  // Shoot the bullet
   shoot() {
     if (this.bullet !== null || this.blasterDirection === BLASTER_DIRECTIONS.down) return;
 

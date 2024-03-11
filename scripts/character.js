@@ -1,3 +1,9 @@
+/*
+
+Character
+
+*/
+
 const JUMP_HEIGHT = 100;
 
 class Character {
@@ -13,22 +19,18 @@ class Character {
   isPlummeting = false;
   hasFoundBlaster = false;
 
-  armRotationAngle = 0;
-
   constructor(initialX, initialY) {
     this.x = initialX;
     this.y = initialY;
   }
 
+  // Update character position
   updatePosition(x, y) {
     this.x = x;
     this.y = y;
   }
 
-  changeState(state) {
-    this.state = state;
-  }
-
+  // Move character horizontally and vertically
   move() {
     // update vertical position
     if (this.isPlummeting) {
@@ -48,6 +50,7 @@ class Character {
     }
   }
 
+  // Draw character depending on the current character state
   draw() {
     if (this.isLeft && this.isFalling) {
       this.drawFallingTo("left")
@@ -70,6 +73,7 @@ class Character {
     }
   }
 
+  // Draw falling to left or right
   drawFallingTo(direction) {
     if (direction === "left") {
       // Left arm
@@ -180,6 +184,7 @@ class Character {
     }
   }
 
+  // Draw waling to left or right
   drawWalkingTo(direction) {
     if (direction === "left") {
       // Left arm
@@ -276,6 +281,7 @@ class Character {
     }
   }
 
+  // Draw walking with blaster to left or right
   drawWalkingWithBlasterTo(direction) {
     if (direction === "left") {
       // Left arm
@@ -384,6 +390,7 @@ class Character {
     }
   }
 
+  // Draw falling
   drawFalling() {
     fill(255)
     stroke(0)
@@ -437,6 +444,7 @@ class Character {
     pop()
   }
 
+  // Draw plummeting
   drawPlummeting() {
     fill(255)
     stroke(0)
@@ -490,6 +498,7 @@ class Character {
     pop()
   }
 
+  // Draw standing
   drawStanding() {
     // Backpack
     fill(255)

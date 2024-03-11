@@ -1,3 +1,5 @@
+// Draw collectable
+
 const COLLECTABLE_MOVEMENT_INCREMENT = 0.5;
 
 class Collectable {
@@ -15,6 +17,7 @@ class Collectable {
     this.size = size;
   }
 
+  // Draw collectable
   draw() {
     stroke(0)
     fill(233, 184, 36);

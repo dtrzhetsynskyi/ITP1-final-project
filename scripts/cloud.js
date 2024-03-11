@@ -1,3 +1,9 @@
+/*
+
+Cloud
+
+*/
+
 // Draw cloud using 2d Perlin noise algorithm.
 // Algorithm Reference: https://en.wikipedia.org/wiki/Perlin_noise
 

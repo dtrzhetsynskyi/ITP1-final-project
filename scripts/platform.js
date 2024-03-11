@@ -1,3 +1,9 @@
+/*
+
+Platform
+
+*/
+
 const PLATFORM_MOVEMENT_INCREMENT = 1;
 
 class Platform {
@@ -16,6 +22,7 @@ class Platform {
     this.moveDistance = moveDistance;
   }
 
+  // Draw platform
   draw() {
     push();
     fill(215, 148, 94);
@@ -24,6 +31,7 @@ class Platform {
     pop();
   }
 
+  // Move platform
   move() {
     if (this.moveDistance === 0) return;
 

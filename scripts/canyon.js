@@ -1,3 +1,12 @@
+/*
+
+Canyon
+
+*/
+
+// Draw canyon using Perlin noise algorithm.
+// Algorithm Reference: https://en.wikipedia.org/wiki/Perlin_noise
+
 class Canyon {
   x = 0;
   y = 0;
@@ -11,8 +20,7 @@ class Canyon {
     this.height = height;
   }
 
-  // Draw canyon using Perlin noise algorithm.
-  // Algorithm Reference: https://en.wikipedia.org/wiki/Perlin_noise
+  // Draw canyon
   draw() {
     fill(148, 84, 36);
     rect(this.x, this.y, this.width, this.height);

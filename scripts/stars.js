@@ -1,3 +1,9 @@
+/*
+
+Stars
+
+*/
+
 const STARS_AMOUNT = 50;
 
 class Stars {

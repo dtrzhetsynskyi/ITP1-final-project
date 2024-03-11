@@ -1,3 +1,9 @@
+/*
+
+Flagpole
+
+*/
+
 class Flagpole {
   x = 0;
   y = 0;
@@ -8,6 +14,7 @@ class Flagpole {
     this.y = y;
   };
 
+  // Draw flagpole
   draw() {
     push();
     strokeWeight(5);

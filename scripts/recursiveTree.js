@@ -1,3 +1,9 @@
+/*
+
+Recursive Tree
+
+*/
+
 const TREE_HEIGHT = 6;
 const BRANCH_ROTATION_DEGREES = 30;
 const BRANCH_SHRINK = 0.67;
@@ -16,12 +22,14 @@ class RecursiveTree {
     const endVector = createVector(x, y - 100);
     const numberOfBranches = (pow(2, TREE_HEIGHT) - 1);
 
+    // Generate braches
     this.branches.push(new Branch(startVector, endVector));
     for (let i = 0; i < numberOfBranches; i++) {
       this.branches.push(...this.branches[i].getBranchesArray())
     }
   }
 
+  // Render branches of the recursive trees
   render() {
     for (let i = 0; i < this.branches.length; i++) {
       this.branches[i].renderTo(this.graphicsLayer);
@@ -38,6 +46,7 @@ class Branch {
     this.endVector = endVector;
   }
 
+  // Render branch to the graphics layer
   renderTo(graphicsLayer) {
     push();
     graphicsLayer.stroke(16, 246, 77)
@@ -48,6 +57,7 @@ class Branch {
     pop();
   }
 
+  // Get branches of branch
   getBranchesArray() {
     const leftVector = p5.Vector.sub(this.endVector, this.startVector);
     const rightVector = p5.Vector.sub(this.endVector, this.startVector);

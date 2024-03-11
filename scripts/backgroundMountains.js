@@ -1,3 +1,9 @@
+/*
+
+Background mountains
+
+*/
+
 // Draw background moutains using Perlin noise algorithm.
 // Algorithm Reference: https://en.wikipedia.org/wiki/Perlin_noise
 
@@ -6,7 +12,7 @@ const BACKGROUND_MOUNTAINS_WIDTH = 3000;
 
 class BackgroundMountains {
 
-  // render the background mountains using Perlin noise to graphics layer
+  // Render the background mountains to the graphics layer
   renderTo(graphicsLayer) {
     let xoff1 = 0;
     let xoff2 = 5000;
