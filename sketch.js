@@ -7,12 +7,14 @@ The Final Game Project
 /////////// INITIALIZE VARIABLES //////////
 const SPACE_KEY = 32;
 
+// initialize main game variables
 let cameraPosX = 0;
 let floorPos_y;
-
 let gameScore;
 let lives;
+let cloudOffset = 0;
 
+// initialize game objects variables
 let character;
 let blaster;
 let scenery;
@@ -26,13 +28,13 @@ let canyons;
 let platforms;
 let enemies = [];
 
+// initialize graphics variables
 let cloudGraphics;
 let parallaxStarsGraphics;
 let parallaxMountainsGraphics;
 let recursiveTreeGraphics;
 
-let cloudOffset = 0;
-
+// initialize sound variables
 let jumpSound;
 let blasterSound;
 let collectableSound;
@@ -40,6 +42,7 @@ let backgroundMusic;
 let plummetSound;
 let enemyDieSound;
 
+// Preload game sfx
 function preload() {
 	soundFormats('mp3', 'wav');
 
@@ -115,6 +118,7 @@ function setup() {
 	new RecursiveTree(recursiveTreeGraphics).render();
 	cloud.renderTo(cloudGraphics);
 
+	// Loop background music
 	backgroundMusic.loop();
 
 	// Start the game
@@ -153,17 +157,20 @@ function draw() {
 
 	scenery.drawStatic();
 
+	// Draw clouds and offset them
 	push();
 	translate(cloudOffset, 0);
 	image(cloudGraphics, -3000, 0);
 	cloudOffset += 0.08;
 	pop();
 
+	// Draw parallax stars and offset them relative to character x position
 	push();
 	translate(-character.x * 0.05, 0)
 	image(parallaxStarsGraphics, 0, 0);
 	pop();
 
+	// Draw parallax mountains and offset them relative to character x position
 	push();
 	translate(-character.x * 0.2, 0)
 	image(parallaxMountainsGraphics, -400, floorPos_y - BACKGROUND_MOUNTAINS_HEIGHT)
@@ -180,6 +187,7 @@ function draw() {
 		}
 	}
 
+	// Render rocket
 	rocket.render();
 
 	// draw the platforms
@@ -198,11 +206,8 @@ function draw() {
 	for (let i = 0; i < collectables.length; i++) {
 		const collectable = collectables[i];
 		if (!collectable.isFound) {
-			if (dist(character.x, character.y, collectable.x, collectable.y) <= 50) {
-				collectable.isFound = true;
-				collectableSound.play();
-				gameScore += 100;
-			}
+			checkCollectable(collectable);
+
 			collectable.move();
 			collectable.draw();
 		}
@@ -215,78 +220,49 @@ function draw() {
 	character.move();
 	character.draw();
 
+	// Draw enemies
 	enemies.map(enemy => {
 		if (!enemy.isEliminated) {
-			if (blaster.bullet && dist(blaster.bullet.x, blaster.bullet.y, enemy.x, enemy.y) <= 80) {
-				enemy.isEliminated = true;
-				blaster.bullet = null;
-				enemyDieSound.play();
-				gameScore += 50;
-			}
+			checkEnemyDie(enemy);
 
 			enemy.move();
 			enemy.render();
 		}
 	});
 
+	// Draw blaster
 	blaster.move();
 	if (blaster.isFound) {
-		if (character.isLeft) {
-			blaster.x = character.x - 25;
-			blaster.y = character.y - 35;
-			blaster.blasterDirection = BLASTER_DIRECTIONS.left;
-		} else if (character.isRight) {
-			blaster.x = character.x + 27;
-			blaster.y = character.y - 35;
-			blaster.blasterDirection = BLASTER_DIRECTIONS.right;
-		} else if (!character.isRight && !character.isLeft && !character.isFalling && !character.isPlummeting) {
-			blaster.x = character.x + 17;
-			blaster.y = character.y - 26;
-			blaster.blasterDirection = BLASTER_DIRECTIONS.down;
-		} else if (!character.isRight && !character.isLeft && character.isFalling && !character.isPlummeting) {
-			blaster.x = character.x + 24;
-			blaster.y = character.y - 30;
-			blaster.blasterDirection = BLASTER_DIRECTIONS.down;
-		} else if (character.isPlummeting) {
-			blaster.blasterDirection = BLASTER_DIRECTIONS.fallingDown;
-		}
+		updateBlasterPosition();
 	}
 	blaster.draw();
 
 	pop()
 
-	push();
-	stroke(220);
-	fill(120, 120, 120, 180)
-	rect(10, 10, 150, 80, 10);
+	// Draw game statistics
+	drawGameStats();
 
-	fill(255)
-	textFont('Courier New', 20);
+	// Show lose message when no lives left
+	if (lives === 0) {
+		showLoseText();
+	}
 
-	let fps = parseInt(frameRate());
-	text(`FPS ${fps}`, width - 100, floorPos_y + 100);
-
-	text(`SCORE ${gameScore}`, 30, 40);
-	text(`LIVES ${lives}`, 30, 70);
-
-	pop();
-
-
-	//A helpful mouse pointer
-	push();
-	fill(0);
-	noStroke();
-	text(mouseX + "," + mouseY, mouseX, mouseY);
-	pop();
+	// Show win message when flagpole is reached
+	if (flagpole.isReached) {
+		showWinText();
+	}
 
 	///////////INTERACTION CODE//////////
 
+	// Character checks
 	controlCharacterFall();
 	restrictCharacterMovement();
 	checkPlayerDie();
 
+	// Check blaster
 	checkBlaster();
 
+	// Check flagpole
 	if (!flagpole.isReached) {
 		checkFlagpole();
 	}
@@ -294,7 +270,13 @@ function draw() {
 
 // function to handle key press
 function keyPressed() {
-	if (character.isPlummeting) return; // disable input handling when plummeting 
+	if ((lives === 0 || flagpole.isReached) && keyCode === SPACE_KEY) {
+		lives = 3;
+		startGame();
+		return;
+	}
+
+	if (character.isPlummeting || lives === 0 || flagpole.isReached) return; // disable input handling when plummeting or dead
 
 	if (key === "a" && character.x > rocket.x + 130) {
 		character.isLeft = true;
@@ -318,6 +300,13 @@ function keyReleased() {
 	}
 }
 
+// Function to update camera position
+function updateCameraPosition() {
+	cameraPosX = character.x - width / 2;
+	translate(-cameraPosX, 0)
+}
+
+// Function to control character fall
 function controlCharacterFall() {
 	if (character.isJumping && character.jumpHeight >= JUMP_HEIGHT) {
 		character.isFalling = true;
@@ -339,12 +328,45 @@ function controlCharacterFall() {
 	}
 }
 
+// Function to restrict character movement
 function restrictCharacterMovement() {
 	if (character.x <= rocket.x + 130) {
 		character.isLeft = false;
 	}
 }
 
+// Function to check player die
+function checkPlayerDie() {
+	if (character.y > height + 100) {
+		plummetSound.play();
+
+		if (lives >= 1) {
+			lives -= 1;
+		}
+
+		if (lives > 0) {
+			startGame();
+		}
+	}
+
+	enemies.map((enemy, i) => {
+		if (
+			!enemy.isEliminated &&
+			abs(character.x - enemy.x) <= 30 &&
+			character.y - enemy.y <= 0 && character.y - enemy.y >= -70
+		) {
+			if (lives >= 1) {
+				lives -= 1;
+			}
+
+			if (lives > 0) {
+				startGame();
+			}
+		}
+	});
+}
+
+// Function to check canyon
 function checkCanyon(t_canyon) {
 	if (character.x - 40 > t_canyon.x && character.x + 40 < t_canyon.x + t_canyon.width && character.y == floorPos_y) {
 		character.isPlummeting = true;
@@ -353,18 +375,27 @@ function checkCanyon(t_canyon) {
 	}
 }
 
-function updateCameraPosition() {
-	cameraPosX = character.x - width / 2;
-	translate(-cameraPosX, 0)
-}
-
-function checkBlaster() {
-	if (!blaster.isFound && dist(character.x, character.y, blaster.x, blaster.y) <= 50) {
-		blaster.isFound = true;
-		character.hasFoundBlaster = true;
+// Function to check collectable
+function checkCollectable(collectable) {
+	if (dist(character.x, character.y, collectable.x, collectable.y) <= 50) {
+		collectable.isFound = true;
+		collectableSound.play();
+		gameScore += 100;
 	}
 }
 
+// Function to check enemy die
+function checkEnemyDie(enemy) {
+	if (blaster.bullet && dist(blaster.bullet.x, blaster.bullet.y, enemy.x, enemy.y) <= 80) {
+		enemy.isEliminated = true;
+		blaster.bullet = null;
+		enemyDieSound.play();
+		gameScore += 50;
+	}
+}
+
+
+// function to check flagpole
 function checkFlagpole() {
 	var distance = abs(character.x - flagpole.x);
 	if (distance < 15) {
@@ -372,27 +403,90 @@ function checkFlagpole() {
 	}
 }
 
-function checkPlayerDie() {
-	if (character.y > height + 100) {
-		lives -= 1;
+// Function to draw game stats
+function drawGameStats() {
+	push();
+	stroke(220);
+	fill(120, 120, 120, 180)
+	rect(10, 10, 220, 150, 10);
+	rect(10, 85, 220, 1);
 
-		plummetSound.play();
+	fill(255)
+	textFont('Courier New', 20);
 
-		if (lives > 0) {
-			startGame();
-		}
+	let fps = parseInt(frameRate());
+	text(`FPS ${fps}`, width - 100, floorPos_y + 100);
+
+	text(`SCORE ${gameScore}`, 30, 40);
+	text(`LIVES ${lives}`, 30, 70);
+
+	text(`MOVEMENT A, D`, 30, 110);
+	text(`SHOOT BLASTER W`, 30, 140);
+
+	pop();
+}
+
+// Function to show text when lost
+function showLoseText() {
+	push()
+	rectMode(CENTER);
+
+	stroke(220);
+	fill(120, 120, 120, 180)
+	rect(width / 2, height / 2, 860, 80, 10);
+
+	noStroke();
+	textAlign(CENTER, CENTER);
+	fill(255)
+	textSize(50);
+	text("Game over. Press space to continue.", width / 2, height / 2);
+	pop();
+}
+
+// Function to shiw text when won
+function showWinText() {
+	push()
+	rectMode(CENTER);
+
+	stroke(220);
+	fill(120, 120, 120, 180)
+	rect(width / 2, height / 2, 950, 80, 10);
+
+	noStroke();
+	textAlign(CENTER, CENTER);
+	fill(255)
+	textSize(50);
+	text("Level complete. Press space to continue.", width / 2, height / 2);
+	pop();
+}
+
+// Function to check blaster
+function checkBlaster() {
+	if (!blaster.isFound && dist(character.x, character.y, blaster.x, blaster.y) <= 50) {
+		blaster.isFound = true;
+		character.hasFoundBlaster = true;
 	}
+}
 
-	// enemies.map((enemy, i) => {
-	// 	if (
-	// 		!enemy.isEliminated &&
-	// 		abs(character.x - enemy.x) <= 30 &&
-	// 		character.y - enemy.y <= 0 && character.y - enemy.y >= -70
-	// 	) {
-	// 		lives -= 1;
-	// 		if (lives > 0) {
-	// 			startGame();
-	// 		}
-	// 	}
-	// })
+// Function to update blaster position relative to character state and movement
+function updateBlasterPosition() {
+	if (character.isLeft) {
+		blaster.x = character.x - 25;
+		blaster.y = character.y - 35;
+		blaster.blasterDirection = BLASTER_DIRECTIONS.left;
+	} else if (character.isRight) {
+		blaster.x = character.x + 27;
+		blaster.y = character.y - 35;
+		blaster.blasterDirection = BLASTER_DIRECTIONS.right;
+	} else if (!character.isRight && !character.isLeft && !character.isFalling && !character.isPlummeting) {
+		blaster.x = character.x + 17;
+		blaster.y = character.y - 26;
+		blaster.blasterDirection = BLASTER_DIRECTIONS.down;
+	} else if (!character.isRight && !character.isLeft && character.isFalling && !character.isPlummeting) {
+		blaster.x = character.x + 24;
+		blaster.y = character.y - 30;
+		blaster.blasterDirection = BLASTER_DIRECTIONS.down;
+	} else if (character.isPlummeting) {
+		blaster.blasterDirection = BLASTER_DIRECTIONS.fallingDown;
+	}
 }
